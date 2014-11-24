@@ -9,5 +9,5 @@ be "told" by a text to speech engine, additionaly fitting images should be fetch
 
 Architecture
 ------------
-This project will be written mainly in Python, a text to speech library will be integrated with the imagequery and display code.
+This project will be written mainly in Python, a text to speech library will be integrated with the image query and display code.
 ![Component Diagram](https://dl.dropboxusercontent.com/s/oy4vh4rdfoao6uf/RTST%20-%20Components.jpg "Component Diagram")
