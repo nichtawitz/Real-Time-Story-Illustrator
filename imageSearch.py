@@ -1,3 +1,9 @@
+from PySide import QtGui
+import urllib
+import sys
+from PySide.QtCore import QCoreApplication
+from PySide.QtGui import QPixmap, QApplication
+
 __author__ = 'konstantin'
 
 import json
@@ -7,10 +13,7 @@ import random
 
 
 def search(term):
-    """
-    Requests images for the term from Google
-    one gets selected at random and returned
-    """
+    """Request images from Google matching :param term, return QPixmap"""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     user_ip = s.getsockname()[0]
@@ -21,6 +24,9 @@ def search(term):
 
     response = urlopen(url).read().decode()
     img_num = random.randint(0, len(json.loads(response)["responseData"]["results"])-1)
-    return json.loads(response)["responseData"]["results"][img_num]["url"]
+
+    data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
+
+    return data
 
 
