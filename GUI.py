@@ -1,11 +1,12 @@
 import os
+import random
 import re
 import shutil
 import urllib
 from PySide.phonon import Phonon
 from gtts import gTTS
 from PySide import QtCore, QtGui
-from PySide.QtGui import QPixmap, QWidget, QSound
+from PySide.QtGui import QPixmap, QWidget, QSound, QFrame
 import sys
 import imageSearch
 
@@ -14,15 +15,43 @@ def close_app():
     """
     Terminates this Application
     """
+    delete_temp()
     sys.exit()
 
 
 def delete_temp():
+    """
+    delete the temporary sound folder
+    """
     shutil.rmtree('temp', ignore_errors=True)
 
 
-def split_tale(text):
+def split_text(text):
+    """
+    Split text into parts on the characters . : ; -
+    :param text: Text to split
+    """
     return re.split('\.|:|;|-', text)
+
+
+def image_from_text(part):
+    """
+    Find a important word in a sentence and search for a fitting image
+    :param part: sentence to analyze
+    :return: a suitable image
+    """
+    cap_words = []
+    for word in re.split('\W+', part):
+        if re.match('[A-Z]', word) is not None:
+            cap_words.append(word)
+    cap_words.pop(0)  # Remove first
+    if len(cap_words) != 0:
+        img = QPixmap()
+        word = random.choice(cap_words)
+        print(word)
+        data = imageSearch.search(urllib.parse.quote_plus(word))
+        img.loadFromData(data)
+        return img
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -35,12 +64,15 @@ class MainWindow(QtGui.QMainWindow):
         """
         super().__init__(flags=QtCore.Qt.FramelessWindowHint)
         self.setObjectName("MainWindow")
-        self.tale = split_tale(text)
+        self.tale = split_text(text)
+        self.imageList = []
+        self.imageCounter = 0
         self.resize(496, 477)
         self.centralwidget = QtGui.QWidget(self)
         self.centralwidget.setObjectName("centralwidget")
 
         self.label = QtGui.QLabel(self.centralwidget)
+        self.label.setText("Test")
         self.label.setGeometry(QtCore.QRect(10, 50, 471, 371))
         self.label.setObjectName("label")
         self.label.setAlignment(QtCore.Qt.AlignCenter)
@@ -57,6 +89,7 @@ class MainWindow(QtGui.QMainWindow):
         mediaObject = Phonon.MediaObject(self)
         audioOutput = Phonon.AudioOutput(Phonon.MusicCategory, self)
         Phonon.createPath(mediaObject, audioOutput)
+        mediaObject.currentSourceChanged.connect(self.change_cur_image)
 
         try:
             os.mkdir('temp/')
@@ -65,12 +98,22 @@ class MainWindow(QtGui.QMainWindow):
 
         for i, part in enumerate(self.tale):
             if part != "" and part != " ":
+                self.imageList.append(image_from_text(part))
                 tts = gTTS(text=part, lang='de')
                 filename = 'temp/temp' + str(i) + '.mp3'
                 tts.save(filename)
                 mediaObject.enqueue(Phonon.MediaSource(filename))
+                mediaObject.play()
         mediaObject.play()
         mediaObject.finished.connect(delete_temp)
+
+    def change_cur_image(self):
+        print(self.imageList)
+        if self.imageList[self.imageCounter] is not None:
+            print("change cur Image")
+            self.label.setPixmap(self.imageList[self.imageCounter])
+        self.imageCounter += 1
+        QtGui.QApplication.processEvents()
 
 
 class InitWindow(QWidget):

@@ -20,12 +20,14 @@ def search(term):
     s.close()
     itype = random.choice(["comic", "clipart", "vector"])
     url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
-           'v=1.0&q=' + term + '%20' + itype + '&userip=' + user_ip + '&rsz=8&imgsz=large')
+           'v=1.0&q=' + term + '%20' + itype + '&userip=' + user_ip + '&rsz=8&imgsz=medium')
 
     response = urlopen(url).read().decode()
     img_num = random.randint(0, len(json.loads(response)["responseData"]["results"])-1)
-
-    data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
+    try:
+        data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
+    except:
+        return search(term)
 
     return data
 
