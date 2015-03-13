@@ -1,4 +1,6 @@
-
+import os
+import re
+import shutil
 import urllib
 from PySide.phonon import Phonon
 from gtts import gTTS
@@ -15,9 +17,17 @@ def close_app():
     sys.exit()
 
 
+def delete_temp():
+    shutil.rmtree('temp', ignore_errors=True)
+
+
+def split_tale(text):
+    return re.split('\.|:|;|-', text)
+
+
 class MainWindow(QtGui.QMainWindow):
     """Display Tale"""
-    def __init__(self, caller, tale):
+    def __init__(self, caller, text):
         """
         Initialize Tale Window
         :param caller: calling window
@@ -25,7 +35,7 @@ class MainWindow(QtGui.QMainWindow):
         """
         super().__init__(flags=QtCore.Qt.FramelessWindowHint)
         self.setObjectName("MainWindow")
-        self.tale = tale
+        self.tale = split_tale(text)
         self.resize(496, 477)
         self.centralwidget = QtGui.QWidget(self)
         self.centralwidget.setObjectName("centralwidget")
@@ -44,14 +54,24 @@ class MainWindow(QtGui.QMainWindow):
         self.get_voice()
 
     def get_voice(self):
-        tts = gTTS(text=self.tale, lang='de')
-        tts.save("temp.mp3")
-
         mediaObject = Phonon.MediaObject(self)
         audioOutput = Phonon.AudioOutput(Phonon.MusicCategory, self)
         Phonon.createPath(mediaObject, audioOutput)
-        mediaObject.setCurrentSource("temp.mp3")
+
+        try:
+            os.mkdir('temp/')
+        except OSError:
+            pass
+
+        for i, part in enumerate(self.tale):
+            if part != "" and part != " ":
+                tts = gTTS(text=part, lang='de')
+                filename = 'temp/temp' + str(i) + '.mp3'
+                tts.save(filename)
+                mediaObject.enqueue(Phonon.MediaSource(filename))
         mediaObject.play()
+        mediaObject.finished.connect(delete_temp)
+
 
 class InitWindow(QWidget):
     def __init__(self):
@@ -100,17 +120,15 @@ class InitWindow(QWidget):
         self.centerGrid.addWidget(self.finishFrame, 2, 0, 1, 1)
         self.verticalLayout.addWidget(self.centerFrame)
 
-        self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-        self.finishBtn.clicked.connect(self.show_main_window)
+        self.finishBtn.clicked.connect(self.open_main_window)
 
-    def retranslateUi(self):
         self.setWindowTitle(QtGui.QApplication.translate("Form", "Märcheneingabe", None, QtGui.QApplication.UnicodeUTF8))
         self.textEdit.setToolTip(QtGui.QApplication.translate("Form", "Es war einmal...", None, QtGui.QApplication.UnicodeUTF8))
         self.finishBtn.setText(QtGui.QApplication.translate("Form", "Erzählung starten...", None, QtGui.QApplication.UnicodeUTF8))
 
-    def show_main_window(self):
+    def open_main_window(self):
         self.main_window = MainWindow(self, self.textEdit.toPlainText())
         self.hide()
         self.main_window.showFullScreen()
