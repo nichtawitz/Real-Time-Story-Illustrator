@@ -1,4 +1,4 @@
-Real Time Story Telling
+Real Time Story Illustrator
 =======================
 
 Project Description
