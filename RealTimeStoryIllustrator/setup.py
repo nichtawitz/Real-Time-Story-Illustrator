@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='RealTimeStoryIllustrator',
     version='0.1',
-    packages=[''],
+    packages=['services', 'test', 'ui'],
     url='https://github.com/nichtawitz/bac',
     license='',
     author='hoebartNichtawitz',

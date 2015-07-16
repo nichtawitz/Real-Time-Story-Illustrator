@@ -1,10 +1,10 @@
 import json
 import logging
 import random
-import re
 import socket
 import urllib
 from urllib.request import urlopen
+
 from PySide.QtGui import QPixmap
 
 __author__ = 'hoebart'
@@ -21,18 +21,6 @@ def image_from_text(sentence):
 
         img.loadFromData(data)
         return img
-
-
-def derive_keyword(sentence):
-    candidates = []
-    for word in re.split('\W+', sentence):
-        if re.match('[A-Z]', word) is not None:
-            candidates.append(word)
-    # cap_words.pop(0)  # Remove start of sentence
-    if len(candidates) != 0:
-        return random.choice(candidates)
-    else:
-        return None
 
 
 def request_image(keyword, num_of_try=0):
