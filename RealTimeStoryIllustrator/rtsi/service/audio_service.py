@@ -3,7 +3,7 @@ import os
 from PySide.phonon import Phonon
 from gtts import gTTS
 
-import rtsi as img_service
+import rtsi.service.image_service as img_service
 
 
 __author__ = 'hoebart'

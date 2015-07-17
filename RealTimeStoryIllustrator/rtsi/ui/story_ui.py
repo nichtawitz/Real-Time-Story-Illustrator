@@ -2,8 +2,7 @@ import re
 
 from PySide import QtGui, QtCore
 
-import rtsi as audio
-
+import rtsi.service.audio_service as audio
 
 __author__ = 'hoebart'
 
