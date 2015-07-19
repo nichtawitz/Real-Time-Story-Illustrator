@@ -36,10 +36,10 @@ def request_image(keyword, num_of_try=0):
     try:
         data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
         return data
-    except Exception:
+    except HTTPError:
         import traceback
 
-        logger.error('generic exception: ' + traceback.format_exc())
+        logger.error('Image could not be loaded: ' + traceback.format_exc())
         request_image(keyword, num_of_try + 1)
 
 
