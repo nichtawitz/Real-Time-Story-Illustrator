@@ -3,7 +3,9 @@ import logging
 import random
 import socket
 import urllib
+from urllib.error import HTTPError
 from urllib.request import urlopen
+from multiprocessing.dummy import Pool as ThreadPool
 
 from PySide.QtGui import QPixmap
 
@@ -11,19 +13,10 @@ __author__ = 'hoebart'
 logger = logging.getLogger(__name__)
 
 
-def image_from_text(sentence):
-        img = QPixmap()
-
-        word = derive_keyword(sentence)
-        if word is None:
-            return None
-        data = request_image(word)
-
-        img.loadFromData(data)
-        return img
-
-
 def request_image(keyword, num_of_try=0):
+    if keyword is None:
+        return None
+    print("Getting image for: "+keyword)
     if num_of_try > 5:  # no images were found
         logger.error("Could not find an image after 5 tries")
         return
@@ -48,3 +41,13 @@ def request_image(keyword, num_of_try=0):
 
         logger.error('generic exception: ' + traceback.format_exc())
         request_image(keyword, num_of_try + 1)
+
+
+def image_from_keyword_list(word_list):
+    pool = ThreadPool(4)
+
+    img_list = pool.map(request_image, word_list)
+    pool.close()
+    pool.join()
+
+    return img_list

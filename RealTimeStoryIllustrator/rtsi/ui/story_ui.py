@@ -1,6 +1,7 @@
 import re
 
 from PySide import QtGui, QtCore
+from PySide.QtGui import QPixmap
 
 import rtsi as audio
 from rtsi.service.text_service import TextService
@@ -17,7 +18,6 @@ class StoryWindow(QtGui.QMainWindow):
         """
         super().__init__(flags=QtCore.Qt.FramelessWindowHint)
         self.setObjectName("MainWindow")
-        text_service = TextService(text, self)
 
         self.image_list = []
         self.img_index = 0
@@ -37,15 +37,16 @@ class StoryWindow(QtGui.QMainWindow):
         self.setWindowTitle(
             QtGui.QApplication.translate("StoryWindow", "Real Time Story Teller", None, QtGui.QApplication.UnicodeUTF8))
 
+        text_service = TextService(text, self)
+        text_service.start_story()
 
-       # audio.speak(self, text_service.sentence_list)
-
-    def append_image(self, image):
+    def append_images(self, images):
         """
         Adds an image to the 'playlist' of images.
         :param image: Image which should be added
         """
-        self.image_list.append(image)
+        self.image_list.extend(images)
+        self.switch_to_next_image()
 
     def switch_to_next_image(self):
         """
@@ -53,6 +54,8 @@ class StoryWindow(QtGui.QMainWindow):
         """
         if self.image_list[self.img_index] is not None:
             print("change cur Image")
-            self.image_holder.setPixmap(self.image_list[self.img_index])
+            img = QPixmap()
+            img.loadFromData(self.image_list[self.img_index])
+            self.image_holder.setPixmap(img)
         self.img_index += 1
         QtGui.QApplication.processEvents()

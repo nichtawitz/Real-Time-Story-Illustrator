@@ -2,6 +2,7 @@ import random
 import re
 from multiprocessing.dummy import Pool as ThreadPool
 from rtsi.service.audio_service import AudioService
+from rtsi.service.image_service import image_from_keyword_list
 
 __author__ = 'hoebart'
 
@@ -34,7 +35,8 @@ class TextService:
         self.audio_service.prepare_voice(self.sentence_list)
         self.audio_service.set_clip_callback(self.window.switch_to_next_image)
 
-        self.image_service = ImageService()
+        image_list = image_from_keyword_list(self.keyword_list)
+        window.append_images(image_list)
 
     def start_story(self):
         self.audio_service.start_audio()

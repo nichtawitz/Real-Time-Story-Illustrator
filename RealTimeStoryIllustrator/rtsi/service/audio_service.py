@@ -16,7 +16,7 @@ def query_tts(sentence_elem):
 
     if sentence != "" and sentence != " ":
         tts = gTTS(text=sentence, lang='de')
-        filename = 'temp/temp' + file_counter + '.mp3'
+        filename = 'temp/temp' + str(file_counter) + '.mp3'
         tts.save(filename)
         return filename
     else:
@@ -39,10 +39,13 @@ class AudioService:
         pool = ThreadPool(4)
         filename_list = pool.map(query_tts, enumerate(sentence_list))
 
+        pool.close()
+        pool.join()
+
         for name in filename_list:
             self.media_object.enqueue(Phonon.MediaSource(name))
 
-    def start_audio(self, sentence_index):
+    def start_audio(self):
         self.media_object.play()
 
     def set_clip_callback(self, method):
