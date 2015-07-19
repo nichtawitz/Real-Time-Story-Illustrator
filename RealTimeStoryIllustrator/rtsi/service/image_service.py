@@ -1,41 +1,22 @@
 import json
 import logging
 import random
-import re
 import socket
 import urllib
+from urllib.error import HTTPError
 from urllib.request import urlopen
+from multiprocessing.dummy import Pool as ThreadPool
+
 from PySide.QtGui import QPixmap
 
 __author__ = 'hoebart'
 logger = logging.getLogger(__name__)
 
 
-def image_from_text(sentence):
-        img = QPixmap()
-
-        word = derive_keyword(sentence)
-        if word is None:
-            return None
-        data = request_image(word)
-
-        img.loadFromData(data)
-        return img
-
-
-def derive_keyword(sentence):
-    candidates = []
-    for word in re.split('\W+', sentence):
-        if re.match('[A-Z]', word) is not None:
-            candidates.append(word)
-    # cap_words.pop(0)  # Remove start of sentence
-    if len(candidates) != 0:
-        return random.choice(candidates)
-    else:
-        return None
-
-
 def request_image(keyword, num_of_try=0):
+    if keyword is None:
+        return None
+    print("Getting image for: "+keyword)
     if num_of_try > 5:  # no images were found
         logger.error("Could not find an image after 5 tries")
         return
@@ -55,8 +36,18 @@ def request_image(keyword, num_of_try=0):
     try:
         data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
         return data
-    except Exception:
+    except HTTPError:
         import traceback
 
-        logger.error('generic exception: ' + traceback.format_exc())
+        logger.error('Image could not be loaded: ' + traceback.format_exc())
         request_image(keyword, num_of_try + 1)
+
+
+def image_from_keyword_list(word_list):
+    pool = ThreadPool(4)
+
+    img_list = pool.map(request_image, word_list)
+    pool.close()
+    pool.join()
+
+    return img_list

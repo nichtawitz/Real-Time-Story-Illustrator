@@ -2,6 +2,7 @@ import os
 
 from PySide.phonon import Phonon
 from gtts import gTTS
+from multiprocessing.dummy import Pool as ThreadPool
 
 import rtsi.service.image_service as img_service
 
@@ -9,29 +10,44 @@ import rtsi.service.image_service as img_service
 __author__ = 'hoebart'
 
 
-def speak(window, sentence_list):
-    """
-    Processes text, generates audio files and plays them.
-    :param window: Window which called this function
-    :param sentence_list: List of sentences which should be spoken
-    """
-    media_object = Phonon.MediaObject(window)
-    audio_output = Phonon.AudioOutput(Phonon.MusicCategory, window)
-    Phonon.createPath(media_object, audio_output)
-    media_object.currentSourceChanged.connect(
-        window.change_cur_image)  # invoke image change in ui when new sentence starts
+def query_tts(sentence_elem):
+    file_counter = sentence_elem[0]
+    sentence = sentence_elem[1]
 
-    try:
-        os.mkdir('temp/')
-    except OSError:
-        pass
+    if sentence != "" and sentence != " ":
+        tts = gTTS(text=sentence, lang='de')
+        filename = 'temp/temp' + str(file_counter) + '.mp3'
+        tts.save(filename)
+        return filename
+    else:
+        return None
 
-    for i, sentence in enumerate(sentence_list):
-        if sentence != "" and sentence != " ":
-            window.append_image(img_service.image_from_text(sentence))
-            tts = gTTS(text=sentence, lang='de')
-            filename = 'temp/temp' + str(i) + '.mp3'
-            tts.save(filename)
-            media_object.enqueue(Phonon.MediaSource(filename))
-            # media_object.play()
-    media_object.play()
+
+class AudioService:
+    def __init__(self, window):
+        self.media_object = Phonon.MediaObject(window)
+        self.audio_output = Phonon.AudioOutput(Phonon.MusicCategory, window)
+        Phonon.createPath(self.media_object, self.audio_output)
+        self.filename_list = []
+
+    def prepare_voice(self, sentence_list):
+        try:
+            os.mkdir('temp/')
+        except OSError:
+            pass
+
+        pool = ThreadPool(4)
+        filename_list = pool.map(query_tts, enumerate(sentence_list))
+
+        pool.close()
+        pool.join()
+
+        for name in filename_list:
+            self.media_object.enqueue(Phonon.MediaSource(name))
+
+    def start_audio(self):
+        self.media_object.play()
+
+    def set_clip_callback(self, method):
+        self.media_object.currentSourceChanged.connect(method)
+

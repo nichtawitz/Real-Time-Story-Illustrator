@@ -16,6 +16,7 @@ def delete_temp():
 
 
 if __name__ == "__main__":
+    delete_temp()
     app = QtGui.QApplication(sys.argv)
     edit_window = ui.InitWindow()
     edit_window.show()
