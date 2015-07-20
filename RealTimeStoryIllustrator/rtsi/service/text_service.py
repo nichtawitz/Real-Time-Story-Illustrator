@@ -8,6 +8,8 @@ __author__ = 'hoebart'
 
 
 def derive_keyword(sentence):
+    # old code:
+    '''
     candidates = []
     for word in re.split('\W+', sentence):
         if re.match('[A-Z]', word) is not None:
@@ -17,6 +19,19 @@ def derive_keyword(sentence):
         return random.choice(candidates)
     else:
         return None
+    '''
+    wordlist = [line.rstrip() for line in open('data\dictionary.txt')]
+
+    candidates = []
+    for word in re.split('\W+', sentence):
+        for dword in wordlist:
+            if word == dword:
+                candidates.append(word)
+    if len(candidates) != 0:
+        return random.choice(candidates)
+    else:
+        return None
+
 
 
 class TextService:
@@ -24,6 +39,7 @@ class TextService:
     def __init__(self, text, window):
         self.sentence_list = re.split('\.|:|;|-|,', text)
         self.window = window
+        self.keyword_list = []
 
         pool = ThreadPool(4)
         self.keyword_list = pool.map(derive_keyword, self.sentence_list)
