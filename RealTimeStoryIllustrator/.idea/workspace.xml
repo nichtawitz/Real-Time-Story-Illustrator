@@ -4,12 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/rtsi/service/text_service.py" line="43" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ebe91a61-bdbf-44a3-b5aa-1a91fbd2a4f4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rtsi/service/image_service.py" afterPath="$PROJECT_DIR$/rtsi/service/image_service.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rtsi/service/text_service.py" afterPath="$PROJECT_DIR$/rtsi/service/text_service.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="ebe91a61-bdbf-44a3-b5aa-1a91fbd2a4f4" name="Default" comment="" />
     <ignored path="RTST.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
