@@ -11,6 +11,7 @@ setup(
     description='Real Time Story Illustrator - Narrates  german stories and displays fitting images',
     install_requires=[
         'gTTs',
-        'PySide'
+        'PySide',
+        'goslate'
     ]
 )
