@@ -38,10 +38,7 @@ def request_image(keyword, num_of_try=0):
         data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
         return data
     except HTTPError:
-        import traceback
-
-        logger.error('Image could not be loaded: ' + traceback.format_exc())
-        request_image(keyword, num_of_try + 1)
+        return request_image(keyword, num_of_try + 1)
 
 
 def image_from_keyword_list(word_list):

@@ -71,3 +71,4 @@ class InitWindow(QWidget):
         self.main_window = StoryWindow(self.textEdit.toPlainText())
         self.hide()
         self.main_window.showFullScreen()
+        self.main_window.start()
