@@ -59,7 +59,7 @@ class TextService(QtCore.QObject):
         self.timing_list = []
 
         pool = ThreadPool(4)
-        self.keyword_list = pool.map(derive_keyword, self.word_list)
+        self.keyword_list = pool.map(derive_keyword, self.sentence_list)
         pool.close()
         pool.join()
         self.audio_service = AudioService(window)
@@ -72,6 +72,7 @@ class TextService(QtCore.QObject):
         pool.join()
 
     def start_story(self):
+        self.audio_service.set_clip_callback(self.window.switch_to_next_image)
         self.audio_service.start_audio()
-        img_switcher_thread = Thread(target=start_image_timing, name="ImageSwitcher", args=(self.keyword_list, self.timing_list, self.change_img))
-        img_switcher_thread.start()
+        # img_switcher_thread = Thread(target=start_image_timing, name="ImageSwitcher", args=(self.keyword_list, self.timing_list, self.change_img))
+        # img_switcher_thread.start()
