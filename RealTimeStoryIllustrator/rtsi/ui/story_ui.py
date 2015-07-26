@@ -91,12 +91,33 @@ class StoryWindow(QtGui.QMainWindow):
         """
         Takes next image from the list and displays it e.g. when sentence ends.
         """
-        if self.image_list[self.img_index] is not None:
-            img = QPixmap()
-            img.loadFromData(self.image_list[self.img_index])
-            self.image_holder2.setPixmap(img)
-        else:
-            self.image_holder2.setPixmap(None)
+        try:
+            if self.image_list[self.img_index] is not None:
+                images = self.image_list[self.img_index]
+                img1 = QPixmap()
+                if len(images) == 1:
+                    img1 = QPixmap()
+                    img1.loadFromData(images[0])
+                    self.image_holder2.setPixmap(img1)
+                elif len(images) == 2:
+                    img1 = QPixmap()
+                    img1.loadFromData(images[1])
+                    self.image_holder1.setPixmap(img1)
+                    img2 = QPixmap()
+                    img2.loadFromData(images[0])
+                    self.image_holder3.setPixmap(img2)
+                elif len(images) == 3:
+                    img1 = QPixmap()
+                    img1.loadFromData(images[2])
+                    self.image_holder1.setPixmap(img1)
+                    img2 = QPixmap()
+                    img2.loadFromData(images[1])
+                    self.image_holder2.setPixmap(img2)
+                    img3 = QPixmap()
+                    img3.loadFromData(images[0])
+                    self.image_holder3.setPixmap(img3)
+        except IndexError:  # gets thrown if one sentence is told
+            pass
 
         self.img_index += 1
         QtGui.QApplication.processEvents()

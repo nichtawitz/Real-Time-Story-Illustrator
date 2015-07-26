@@ -29,7 +29,7 @@ def request_image(keyword, num_of_try=0):
     s.connect(("8.8.8.8", 80))
     user_ip = s.getsockname()[0]
     s.close()
-    img_type = random.choice(["comic", "clipart", "vector"])
+    img_type = random.choice(["vector%20art", "drawing", "doodle"])
     url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
                  'v=1.0&q=' + term + '%20' + img_type + '&userip=' + user_ip + '&rsz=8&imgsz=medium')
     response = urlopen(url).read().decode()
@@ -42,10 +42,14 @@ def request_image(keyword, num_of_try=0):
 
 
 def image_from_keyword_list(word_list):
-    pool = ThreadPool(4)
+    img_list = []
+    for words in word_list:
+        if words is None:
+            continue
+        temp_list = []
+        for word in words:
+            temp_list.append(request_image(word))
 
-    img_list = pool.map(request_image, word_list)
-    pool.close()
-    pool.join()
+        img_list.append(temp_list)
 
     return img_list

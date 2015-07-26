@@ -9,7 +9,6 @@ from time import sleep
 
 __author__ = 'hoebart'
 
-SPEECH_LENGTH_OF_CHAR = 0.09
 
 def derive_keyword(sentence):
     # old code:
@@ -30,15 +29,11 @@ def derive_keyword(sentence):
     for word in re.split('\W+', sentence):
         if word in wordlist:
             candidates.append(word)
-    if len(candidates) != 0:
-        return random.choice(candidates)
-    else:
+
+    if len(candidates) == 0:
         return None
-
-
-def calc_timing(word):
-    duration = len(word) * SPEECH_LENGTH_OF_CHAR
-    return duration
+    else:
+        return candidates[0:3]
 
 
 def start_image_timing(keyword_list, timing_list, change_img):
@@ -66,13 +61,7 @@ class TextService(QtCore.QObject):
         self.audio_service.prepare_voice(self.sentence_list)
         image_list = image_from_keyword_list(self.keyword_list)
         window.append_images(image_list)
-        pool = ThreadPool(4)
-        self.timing_list = pool.map(calc_timing, self.word_list)
-        pool.close()
-        pool.join()
 
     def start_story(self):
         self.audio_service.set_clip_callback(self.window.switch_to_next_image)
         self.audio_service.start_audio()
-        # img_switcher_thread = Thread(target=start_image_timing, name="ImageSwitcher", args=(self.keyword_list, self.timing_list, self.change_img))
-        # img_switcher_thread.start()
