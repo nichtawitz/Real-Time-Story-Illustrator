@@ -41,8 +41,7 @@ def request_image(keyword, num_of_try=0):
         return request_image(keyword, num_of_try + 1)
 
 
-def image_from_keyword_list(word_list):
-    img_list = []
+def image_from_keyword_list(word_list, window):
     for words in word_list:
         if words is None:
             continue
@@ -50,6 +49,4 @@ def image_from_keyword_list(word_list):
         for word in words:
             temp_list.append(request_image(word))
 
-        img_list.append(temp_list)
-
-    return img_list
+        window.append_images(temp_list)

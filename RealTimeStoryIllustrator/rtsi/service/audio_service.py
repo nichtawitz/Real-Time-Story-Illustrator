@@ -3,6 +3,7 @@ import os
 from PySide.phonon import Phonon
 from gtts import gTTS
 from multiprocessing.dummy import Pool as ThreadPool
+import time
 
 import rtsi.service.image_service as img_service
 
@@ -36,16 +37,14 @@ class AudioService:
         except OSError:
             pass
 
-        pool = ThreadPool(4)
-        filename_list = pool.map(query_tts, enumerate(sentence_list))
-
-        pool.close()
-        pool.join()
-
-        for name in filename_list:
+        for idx, sentence in enumerate(sentence_list):
+            time.sleep(0.01)
+            name = query_tts([idx, sentence])
             self.media_object.enqueue(Phonon.MediaSource(name))
 
     def start_audio(self):
+        for m in self.media_object.queue():
+            print(m.fileName())
         self.media_object.play()
 
     def set_clip_callback(self, method):

@@ -1,3 +1,4 @@
+from time import sleep
 from PySide.QtGui import QWidget
 
 from rtsi.ui.story_ui import *

@@ -1,4 +1,6 @@
+import queue
 import re
+from time import sleep
 
 from PySide import QtGui, QtCore
 from PySide.QtGui import QPixmap
@@ -18,7 +20,7 @@ class StoryWindow(QtGui.QMainWindow):
         super().__init__(flags=QtCore.Qt.FramelessWindowHint)
         self.setObjectName("MainWindow")
 
-        self.image_list = []
+        self.image_list = queue.Queue()
         self.img_index = 0
         self.setStyleSheet("background-color: rgb(50, 50, 50);")
 
@@ -41,17 +43,14 @@ class StoryWindow(QtGui.QMainWindow):
         self.image_layout.setContentsMargins(40, -1, 40, -1)
 
         self.image_holder3 = QtGui.QLabel(self.image_frame)
-        self.image_holder3.setStyleSheet("background-color: rgb(255, 0, 0);")
         self.image_holder3.setAlignment(QtCore.Qt.AlignCenter)
         self.image_layout.addWidget(self.image_holder3)
 
         self.image_holder2 = QtGui.QLabel(self.image_frame)
-        self.image_holder2.setStyleSheet("background-color: rgb(255, 0, 0);")
         self.image_holder2.setAlignment(QtCore.Qt.AlignCenter)
         self.image_layout.addWidget(self.image_holder2)
 
         self.image_holder1 = QtGui.QLabel(self.image_frame)
-        self.image_holder1.setStyleSheet("background-color: rgb(255, 0, 0);")
         self.image_holder1.setAlignment(QtCore.Qt.AlignCenter)
         self.image_layout.addWidget(self.image_holder1)
 
@@ -83,8 +82,8 @@ class StoryWindow(QtGui.QMainWindow):
         Adds an image to the 'playlist' of images.
         :param image: Image which should be added
         """
-        self.image_list.extend(images)
-        self.switch_to_next_image()
+        self.image_list.put(images)
+        print("Image has been put in Queue size is now:"+str(self.image_list.qsize()))
 
     @QtCore.Slot()
     def switch_to_next_image(self):
@@ -92,17 +91,24 @@ class StoryWindow(QtGui.QMainWindow):
         Takes next image from the list and displays it e.g. when sentence ends.
         """
         try:
-            if self.image_list[self.img_index] is not None:
-                images = self.image_list[self.img_index]
+            if not self.image_list.empty():
+                images = self.image_list.get()
                 img1 = QPixmap()
                 if len(images) == 1:
-                    img1 = QPixmap()
-                    img1.loadFromData(images[0])
-                    self.image_holder2.setPixmap(img1)
+                    self.image_holder1.setPixmap(None)
+
+                    img2 = QPixmap()
+                    img2.loadFromData(images[0])
+                    self.image_holder2.setPixmap(img2)
+
+                    self.image_holder3.setPixmap(None)
                 elif len(images) == 2:
                     img1 = QPixmap()
                     img1.loadFromData(images[1])
                     self.image_holder1.setPixmap(img1)
+
+                    self.image_holder2.setPixmap(None)
+
                     img2 = QPixmap()
                     img2.loadFromData(images[0])
                     self.image_holder3.setPixmap(img2)
@@ -110,16 +116,17 @@ class StoryWindow(QtGui.QMainWindow):
                     img1 = QPixmap()
                     img1.loadFromData(images[2])
                     self.image_holder1.setPixmap(img1)
+
                     img2 = QPixmap()
                     img2.loadFromData(images[1])
                     self.image_holder2.setPixmap(img2)
+
                     img3 = QPixmap()
                     img3.loadFromData(images[0])
                     self.image_holder3.setPixmap(img3)
         except IndexError:  # gets thrown if one sentence is told
             pass
 
-        self.img_index += 1
         QtGui.QApplication.processEvents()
 
     def start(self):

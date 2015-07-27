@@ -1,3 +1,4 @@
+import threading
 from PySide import QtCore
 import random
 import re
@@ -58,10 +59,14 @@ class TextService(QtCore.QObject):
         pool.close()
         pool.join()
         self.audio_service = AudioService(window)
-        self.audio_service.prepare_voice(self.sentence_list)
-        image_list = image_from_keyword_list(self.keyword_list)
-        window.append_images(image_list)
+        audio_thread = threading.Thread(target=self.audio_service.prepare_voice, args=(self.sentence_list,))
+        audio_thread.start()
+        # self.audio_service.prepare_voice(self.sentence_list)
+        # image_list = image_from_keyword_list(self.keyword_list)
+        image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window))
+        image_thread.start()
 
     def start_story(self):
         self.audio_service.set_clip_callback(self.window.switch_to_next_image)
+        sleep(5)
         self.audio_service.start_audio()
