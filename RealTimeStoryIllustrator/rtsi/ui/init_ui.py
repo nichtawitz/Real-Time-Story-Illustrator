@@ -33,6 +33,7 @@ class InitWindow(QWidget):
         self.textGrid.setContentsMargins(-1, -1, -1, 5)
         self.textGrid.setObjectName("textGrid")
         self.textEdit = QtGui.QTextEdit(self.textFrame)
+        self.textEdit.setAcceptRichText(False)
         self.textEdit.setTabChangesFocus(True)
         self.textEdit.setObjectName("textEdit")
         self.textGrid.addWidget(self.textEdit, 0, 0, 1, 1)

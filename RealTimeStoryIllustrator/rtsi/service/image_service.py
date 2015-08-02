@@ -17,11 +17,11 @@ logger = logging.getLogger(__name__)
 def request_image(keyword, num_of_try=0):
     if keyword is None:
         return None
-    translatedkw = goslate.Goslate().translate(keyword, 'en')
+    translatedkw = keyword  # goslate.Goslate().translate(keyword, 'en')
     print("Getting image for: "+translatedkw)
     if num_of_try > 5:  # no images were found
         logger.error("Could not find an image after 5 tries")
-        return
+        return None
 
     term = urllib.parse.quote_plus(translatedkw)
 
@@ -29,7 +29,7 @@ def request_image(keyword, num_of_try=0):
     s.connect(("8.8.8.8", 80))
     user_ip = s.getsockname()[0]
     s.close()
-    img_type = random.choice(["vector%20art", "drawing", "doodle"])
+    img_type = random.choice(["skizze", "zeichnung"])
     url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
                  'v=1.0&q=' + term + '%20' + img_type + '&userip=' + user_ip + '&rsz=8&imgsz=medium')
     response = urlopen(url).read().decode()
@@ -44,6 +44,7 @@ def request_image(keyword, num_of_try=0):
 def image_from_keyword_list(word_list, window):
     for words in word_list:
         if words is None:
+            window.append_images([None])
             continue
         temp_list = []
         for word in words:

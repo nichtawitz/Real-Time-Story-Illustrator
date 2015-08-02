@@ -24,7 +24,7 @@ def derive_keyword(sentence):
     else:
         return None
     '''
-    wordlist = [line.rstrip() for line in open('data\dictionary.txt')]
+    wordlist = [line.rstrip() for line in open('data\dictionary.txt',encoding="utf-8")]
 
     candidates = []
     for word in re.split('\W+', sentence):
@@ -68,5 +68,5 @@ class TextService(QtCore.QObject):
 
     def start_story(self):
         self.audio_service.set_clip_callback(self.window.switch_to_next_image)
-        sleep(5)
+        sleep(3)
         self.audio_service.start_audio()
