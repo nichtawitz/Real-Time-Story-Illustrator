@@ -68,5 +68,5 @@ class TextService(QtCore.QObject):
 
     def start_story(self):
         self.audio_service.set_clip_callback(self.window.switch_to_next_image)
-        sleep(3)
+        sleep(5)
         self.audio_service.start_audio()
