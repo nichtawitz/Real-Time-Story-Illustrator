@@ -46,10 +46,17 @@ def derive_keyword(sentence):
         return candidates[0:3]
 
 
+def start_image_timing(keyword_list, timing_list, change_img):
+    for idx, word in enumerate(keyword_list[1:]):
+        sleep(timing_list[idx])
+        change_img.emit()
+
+
 class TextService(QtCore.QObject):
     """
-    A TextSevice which handles all text processing including the fetching of images and voice
+    A TextService which handles all text processing including the fetching of images and voice
     """
+    change_img = QtCore.Signal()
     def __init__(self, text, window):
         """
         :param text:
