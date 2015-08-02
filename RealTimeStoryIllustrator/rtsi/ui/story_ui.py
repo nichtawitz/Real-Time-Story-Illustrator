@@ -12,6 +12,9 @@ __author__ = 'hoebart'
 
 
 class StoryWindow(QtGui.QMainWindow):
+    """
+    Window that holds all images and is displayed fullscreen
+    """
     def __init__(self, text):
         """
         Initialize Story Window
@@ -130,4 +133,4 @@ class StoryWindow(QtGui.QMainWindow):
         QtGui.QApplication.processEvents()
 
     def start(self):
-        self.text_service.start_story()
+        self.text_service.start_story(wait_seconds=5)
