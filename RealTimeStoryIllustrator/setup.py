@@ -1,5 +1,6 @@
 from distutils.core import setup
 
+
 setup(
     name='RealTimeStoryIllustrator',
     version='0.1',

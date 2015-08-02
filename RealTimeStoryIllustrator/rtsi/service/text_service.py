@@ -78,8 +78,10 @@ class TextService(QtCore.QObject):
 
         self.audio_service = AudioService(window)
         audio_thread = threading.Thread(target=self.audio_service.prepare_voice, args=(self.sentence_list,))
+        audio_thread.setDaemon(True)
         audio_thread.start()
         image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window))
+        image_thread.setDaemon(True)
         image_thread.start()
 
     def start_story(self, wait_seconds=5):
