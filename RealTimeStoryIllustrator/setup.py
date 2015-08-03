@@ -4,7 +4,7 @@ from distutils.core import setup
 setup(
     name='RealTimeStoryIllustrator',
     version='0.1',
-    packages=['services', 'test', 'ui'],
+    packages=['rtsi/', 'rtsi/service', 'rtsi/test', 'rtsi/ui'],
     url='https://github.com/nichtawitz/bac',
     license='',
     author='hoebartNichtawitz',
