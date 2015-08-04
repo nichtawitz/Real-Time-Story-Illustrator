@@ -1,3 +1,4 @@
+import os
 import threading
 from PySide import QtCore
 import random
@@ -5,7 +6,7 @@ import re
 from multiprocessing.dummy import Pool as ThreadPool
 from rtsi.service.audio_service import AudioService
 from rtsi.service.image_service import image_from_keyword_list
-from threading import  Thread
+from threading import Thread
 from time import sleep
 
 __author__ = 'hoebart'
@@ -33,7 +34,8 @@ def derive_keyword(sentence):
     else:
         return None
     '''
-    wordlist = [line.rstrip() for line in open('data\dictionary.txt', encoding="utf-8")]
+    wordlist = [line.rstrip() for line in
+                open(os.path.join(os.path.dirname(__file__), 'data', 'dictionary.txt'), encoding="utf-8")]
 
     candidates = []
     for word in re.split('\W+', sentence):
@@ -57,6 +59,7 @@ class TextService(QtCore.QObject):
     A TextService which handles all text processing including the fetching of images and voice
     """
     change_img = QtCore.Signal()
+
     def __init__(self, text, window):
         """
         :param text:

@@ -9,10 +9,15 @@ setup(
     license='',
     author='hoebartNichtawitz',
     author_email='',
-    description='Real Time Story Illustrator - Narrates  german stories and displays fitting images',
+    description='Real Time Story Illustrator - Narrates german stories and displays fitting images',
     install_requires=[
         'gTTs',
         'PySide',
         'goslate'
-    ]
+    ],
+    entry_points={
+        'console_scripts': [
+            'start_rtsi = rtsi.main:main',
+        ]
+    }
 )

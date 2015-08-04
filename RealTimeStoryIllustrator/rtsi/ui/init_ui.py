@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 # Form implementation generated from reading ui file 'initWindow.ui'
 #
@@ -18,6 +17,7 @@ class InitWindow(QWidget):
     """
     Window where story is chosen or defined
     """
+
     def __init__(self):
         super().__init__()
         self.main_window = None
@@ -38,7 +38,7 @@ class InitWindow(QWidget):
         self.frame1.setMinimumSize(QtCore.QSize(0, 35))
         self.frame1.setMaximumSize(QtCore.QSize(16777215, 35))
         self.frame1.setStyleSheet("background-color: rgb(135, 217, 255);\n"
-"background-color: rgb(52, 170, 62);")
+                                  "background-color: rgb(52, 170, 62);")
         self.frame1.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame1.setFrameShadow(QtGui.QFrame.Raised)
         self.frame1.setObjectName("frame1")
@@ -70,23 +70,26 @@ class InitWindow(QWidget):
         self.tree_left_corner = QtGui.QLabel(self.frame_2)
         self.tree_left_corner.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.tree_left_corner.setText("")
-        self.tree_left_corner.setPixmap(QtGui.QPixmap("data/pics/tree_corner.png"))
+        self.tree_left_corner.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(__file__), '..', 'data', 'pics',
+                                                                   'tree_corner.png')))
         self.tree_left_corner.setScaledContents(True)
         self.tree_left_corner.setObjectName("tree_left_corner")
         self.gridLayout_2.addWidget(self.tree_left_corner, 0, 0, 1, 1)
         self.tree_right = QtGui.QLabel(self.frame_2)
         self.tree_right.setMinimumSize(QtCore.QSize(600, 0))
         self.tree_right.setText("")
-        self.tree_right.setPixmap(QtGui.QPixmap("data/pics/tree_right.png"))
+        self.tree_right.setPixmap(
+            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), '..', 'data', 'pics', 'tree_right.png')))
         self.tree_right.setScaledContents(True)
-        self.tree_right.setObjectName("data/pics/tree_right")
+        self.tree_right.setObjectName(os.path.join(os.path.dirname(__file__), '..', 'data', 'pics', 'tree_right'))
         self.gridLayout_2.addWidget(self.tree_right, 0, 1, 1, 1)
         self.tree_left = QtGui.QLabel(self.frame_2)
         self.tree_left.setMinimumSize(QtCore.QSize(150, 400))
         self.tree_left.setText("")
-        self.tree_left.setPixmap(QtGui.QPixmap("data/pics/tree_left.png"))
+        self.tree_left.setPixmap(
+            QtGui.QPixmap(os.path.join(os.path.dirname(__file__), '..', 'data', 'pics', 'tree_left.png')))
         self.tree_left.setScaledContents(True)
-        self.tree_left.setObjectName("data/pics/tree_left")
+        self.tree_left.setObjectName(os.path.join(os.path.dirname(__file__), '..', 'data', 'pics', 'tree_left'))
         self.gridLayout_2.addWidget(self.tree_left, 2, 0, 1, 1)
         self.verticalLayout_2 = QtGui.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -111,14 +114,15 @@ class InitWindow(QWidget):
         self.pushButton.setText(
             QtGui.QApplication.translate("Form", "Erzählung starten...", None, QtGui.QApplication.UnicodeUTF8))
 
-
         self.pushButton.setText(
             QtGui.QApplication.translate("Form", "Erzählung starten...", None, QtGui.QApplication.UnicodeUTF8))
-        self.textEdit.setHtml(QtGui.QApplication.translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.5pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        self.textEdit.setHtml(QtGui.QApplication.translate("Form",
+                                                           "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+                                                           "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+                                                           "p, li { white-space: pre-wrap; }\n"
+                                                           "</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:7.5pt; font-weight:400; font-style:normal;\">\n"
+                                                           "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;\"><br /></p></body></html>",
+                                                           None, QtGui.QApplication.UnicodeUTF8))
 
         self.fill_combo_box()
         self.textEdit.setText('Märchen eingeben...')
@@ -134,11 +138,13 @@ class InitWindow(QWidget):
             self.comboBox.setCurrentIndex(0)
 
     def get_value(self):
-        self.textEdit.setText(open('data/fairytales/'+str(self.comboBox.currentText())+'.txt').read())
+        self.textEdit.setText(open(os.path.join(os.path.dirname(__file__), '..', 'data', 'fairytales', str(
+            self.comboBox.currentText()) + '.txt')).read())
 
     def fill_combo_box(self):
         tales = []
-        path = 'data/fairytales'
+        path = os.path.join(os.path.dirname(__file__), '..', 'data', 'fairytales')
+
         for name in os.listdir(path):
             if os.path.isfile(os.path.join(path, name)):
                 tales.append(os.path.splitext(name)[0])
@@ -146,8 +152,8 @@ class InitWindow(QWidget):
         self.comboBox.addItem('Märchen auswählen..')
         self.comboBox.addItems(tales)
 
-        #fairytale = open('data/fairytales/'+str(self.comboBox.currentText())+'.txt')
-        #self.textEdit.setText(fairytale.read())
+        # fairytale = open('data/fairytales/'+str(self.comboBox.currentText())+'.txt')
+        # self.textEdit.setText(fairytale.read())
 
     def open_story_window(self):
         self.main_window = StoryWindow(self.textEdit.toPlainText())
