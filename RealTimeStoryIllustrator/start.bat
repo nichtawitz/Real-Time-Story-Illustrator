@@ -1,1 +1,0 @@
-cd rtsi && python main.py

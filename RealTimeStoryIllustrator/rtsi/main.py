@@ -14,9 +14,15 @@ def delete_temp():
     """
     shutil.rmtree('temp', ignore_errors=True)
 
+def delete_egg_info():
+    """
+    delete the egg-info folder
+    """
+    shutil.rmtree('*.egg-info', ignore_errors=True)
 
 def main():
     delete_temp()
+    #delete_egg_info()
     app = QtGui.QApplication(sys.argv)
     edit_window = ui.InitWindow()
     edit_window.show()

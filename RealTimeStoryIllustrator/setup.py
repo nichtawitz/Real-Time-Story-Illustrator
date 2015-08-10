@@ -1,10 +1,12 @@
-from distutils.core import setup
+from setuptools import setup, find_packages, Command
 
 
 setup(
     name='RealTimeStoryIllustrator',
     version='0.1',
-    packages=['rtsi/', 'rtsi/service', 'rtsi/test', 'rtsi/ui'],
+    packages=find_packages(),
+    include_package_data=True,
+    package_data={'rtsi.data': ['*.txt','*.png','*.jpg']},
     url='https://github.com/nichtawitz/bac',
     license='',
     author='hoebartNichtawitz',

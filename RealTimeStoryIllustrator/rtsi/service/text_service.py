@@ -1,12 +1,10 @@
 import os
 import threading
 from PySide import QtCore
-import random
 import re
 from multiprocessing.dummy import Pool as ThreadPool
 from rtsi.service.audio_service import AudioService
 from rtsi.service.image_service import image_from_keyword_list
-from threading import Thread
 from time import sleep
 
 __author__ = 'hoebart'
@@ -35,7 +33,7 @@ def derive_keyword(sentence):
         return None
     '''
     wordlist = [line.rstrip() for line in
-                open(os.path.join(os.path.dirname(__file__), 'data', 'dictionary.txt'), encoding="utf-8")]
+                open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'dictionary.txt'), encoding="utf-8")]
 
     candidates = []
     for word in re.split('\W+', sentence):
@@ -86,6 +84,9 @@ class TextService(QtCore.QObject):
         image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window))
         image_thread.setDaemon(True)
         image_thread.start()
+        # subtitle_thread = threading.Thread(target=window.set_subtitles, args=())
+        # subtitle_thread.setDaemon(True)
+        # subtitle_thread.start()
 
     def start_story(self, wait_seconds=5):
         """

@@ -73,7 +73,7 @@ class StoryWindow(QtGui.QMainWindow):
         self.main_layout.addWidget(self.frame)
         self.setCentralWidget(self.central_widget)
 
-        self.subtitle_label.setText(QtGui.QApplication.translate("Form", "Subtitles", None, QtGui.QApplication.UnicodeUTF8))
+        self.subtitle_label.setText(QtGui.QApplication.translate("Form", "Subtitle", None, QtGui.QApplication.UnicodeUTF8))
         self.setWindowTitle(
             QtGui.QApplication.translate("StoryWindow", "Real Time Story Teller", None, QtGui.QApplication.UnicodeUTF8))
 
@@ -88,11 +88,28 @@ class StoryWindow(QtGui.QMainWindow):
         self.image_list.put(images)
         print("Image has been put in Queue size is now:"+str(self.image_list.qsize()))
 
+    def set_subtitles(self, subtitles):
+        """
+        Sets the subtitles to the pictures
+        :param subtitles: Found words from the dictionary
+        """
+        subs = ""
+        for word in subtitles:
+            if word is None:
+                subs = subs + ""
+                continue
+            else:
+                subs = subs + word + ""
+
+        self.subtitle_label.setText(QtGui.QApplication.translate("Form", subs, None, QtGui.QApplication.UnicodeUTF8))
+
     @QtCore.Slot()
     def switch_to_next_image(self):
         """
         Takes next image from the list and displays it e.g. when sentence ends.
         """
+        temptext = ""
+
         try:
             if not self.image_list.empty():
                 images = self.image_list.get()
