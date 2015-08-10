@@ -38,11 +38,11 @@ dist
 +-- start.bat
 +-- uninstall.bat
 ```
-* **Step 3**: Double-click install.bat *(Note: If you need administrator rights, right-click on install.bat and click on 'Run as administrator')*. The Batch-file runs ```python setup.py install ``` to install Real-Time Story lllustrator in the site-packages folder of Python with the ```--record installed_files.txt ``` option to keep track where the files are stored *(which is used by uninstall.bat to delete those installed files automatically)*. In this directory you may also use ```python setup.py install ``` in the command prompt to install Real-Time Story Illustrator instead of using the Batch-File.
+* **Step 3**: Double-click install.bat *(Note: If you need administrator rights, right-click on install.bat and click on 'Run as administrator')*. The Batch-file runs ```python setup.py install ``` to install Real-Time Story lllustrator in the site-packages folder of Python with the ```--record installed_files.txt ``` option to keep track where the files are stored *(which is used by uninstall.bat to delete those installed files automatically)*. You may also use ```python setup.py install ``` in the command prompt to install Real-Time Story Illustrator instead of using the Batch-File.
 
 ## Starting Real-Time Story Illustrator
 
-To start Real-Time Story Illustrator simply double-click on *start.bat* (Note: If you need administrator rights, right-click on install.bat and click on 'Run as administrator')*. The Batch-file starts the program with the ```start_rtsi``` command, which also can be used in the command prompt to start Real-Time Story Illustrator.
+To start Real-Time Story Illustrator simply double-click on *start.bat* (Note: If you need administrator rights, right-click on install.bat and click on 'Run as administrator')*. The Batch-file starts the program with the ```start_rtsi``` command. ```start_rtsi``` may also be used in the command prompt to start Real-Time Story Illustrator instead of using the Batch-file.
 
 ## Uninstall Real-Time Story Illustrator
 
