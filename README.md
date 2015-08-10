@@ -13,6 +13,10 @@ This project will be written mainly in Python, a text to speech library will be 
 
 Setup-py is used as build tool for this project. The Text-To-Speech capabilities are provided by the [gTTS](https://github.com/pndurette/gTTS) module. It retrieves spoken text from the Google TTS Engine in Google Translate. To build the User Interface [PySide](http://qt-project.org/wiki/PySide) is used, which provides LGPL-licensed bindings to Qt. As some of the retrived Images from Google could require editing we use [Pillow](http://python-pillow.github.io/) to accomplish this.
 
+## Screenshot
+
+![](http://oi60.tinypic.com/103e4xx.jpg)
+
 ## Installing Real-Time Story Illustrator
 
 ### Windows:
