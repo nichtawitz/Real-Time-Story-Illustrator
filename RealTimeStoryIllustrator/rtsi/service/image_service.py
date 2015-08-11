@@ -3,7 +3,7 @@ import logging
 import random
 import socket
 import urllib
-import goslate
+#import goslate
 import os
 
 from urllib.error import HTTPError
@@ -30,10 +30,10 @@ def request_image(keyword, num_of_try=0, translate=True):
     """
     if keyword is None:
         return None
-    if translate:
-        translatedkw = goslate.Goslate().translate(keyword, 'en')
-    else:
-        translatedkw = keyword
+   # if translate:
+   #     translatedkw = goslate.Goslate().translate(keyword, 'en')
+   # else:
+    translatedkw = keyword
     print("Getting image for: " + translatedkw)
     if num_of_try > 5:  # no images were found
         logger.error("Could not find an image after 5 tries")
@@ -57,7 +57,7 @@ def request_image(keyword, num_of_try=0, translate=True):
     img_type = '%7Eillustration+AND+clipart'
     url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
            'v=1.0&q=%7E%22' + term + '%22%20' +  img_type + '%20' + excludedsites + '%20&userip=' + user_ip + '&rsz=8&imgsz=medium&safe=active'+ '&tbs=ic:color')
-    print(url)
+    # print(url)
     response = urlopen(url).read().decode()
 
     try:
