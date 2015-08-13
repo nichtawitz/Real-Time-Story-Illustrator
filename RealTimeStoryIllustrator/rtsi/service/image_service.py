@@ -3,11 +3,12 @@ import logging
 import random
 import socket
 import urllib
-#import goslate
 import os
 
+from mstranslator import Translator
 from urllib.error import HTTPError
 from urllib.request import urlopen
+from urllib.parse import urlencode
 
 # from multiprocessing.dummy import Pool as ThreadPool
 # from PySide.QtGui import QPixmap
@@ -28,30 +29,33 @@ def request_image(keyword, num_of_try=0, translate=True):
     :return:
         The image data in bytes
     """
-    if keyword is None:
-        return None
-   # if translate:
-   #     translatedkw = goslate.Goslate().translate(keyword, 'en')
-   # else:
-    translatedkw = keyword
-    print("Getting image for: " + translatedkw)
-    if num_of_try > 5:  # no images were found
-        logger.error("Could not find an image after 5 tries")
-        return None
-
-    term = urllib.parse.quote_plus(translatedkw)
 
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(("8.8.8.8", 80))
     user_ip = s.getsockname()[0]
     s.close()
 
+    if keyword is None:
+        return None
+    if translate:
+        trans = Translator('__RealTimeStoryIllustrator__','cpXy6YwcqqjO84ncM6jTGMqoey6uPD3N7yoDYbzk8Xk=')
+        translatedkw = trans.translate(keyword, lang_from='de', lang_to='en')
+    else:
+        translatedkw = keyword
+    print("Getting image for: " + keyword + " = " + translatedkw)
+
+    if num_of_try > 5:  # no images were found
+        logger.error("Could not find an image after 5 tries")
+        return None
+
+    term = urllib.parse.quote_plus(translatedkw)
+
     sites = [line.rstrip() for line in
              open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'sites.txt'),
                   encoding="utf-8")]
     excludedsites = ""
-    for site in sites:
-        excludedsites = excludedsites + "-site:" + urllib.parse.quote_plus(site) + '%20'
+    #for site in sites:
+    #    excludedsites = excludedsites + "-site:" + urllib.parse.quote_plus(site) + '%20'
 
 
     img_type = '%7Eillustration+AND+clipart'
@@ -61,14 +65,14 @@ def request_image(keyword, num_of_try=0, translate=True):
     response = urlopen(url).read().decode()
 
     try:
-        #img_num = random.randint(0, len(json.loads(response)["responseData"]["results"]) - 1)
-        if num_of_try < 4:
-            if 1+(num_of_try*10) <  random.randint(num_of_try*5, len(json.loads(response)["responseData"]["results"]) - 1):
-                img_num = random.randint(0, 1+(num_of_try*10))
-            else:
-                img_num = random.randint(num_of_try*5, len(json.loads(response)["responseData"]["results"]) - 1)
-        else:
-            img_num = random.randint(num_of_try*5, len(json.loads(response)["responseData"]["results"]) - 1)
+        img_num = random.randint(0, len(json.loads(response)["responseData"]["results"]) - 1)
+        #if num_of_try < 4:
+        #    if 1+(num_of_try*10) <  random.randint(num_of_try*5, len(json.loads(response)["responseData"]["results"]) - 1):
+        #        img_num = random.randint(0, 1+(num_of_try*10))
+        #    else:
+        #        img_num = random.randint(num_of_try*5, len(json.loads(response)["responseData"]["results"]) - 1)
+        #else:
+        #    img_num = random.randint(num_of_try*5, len(json.loads(response)["responseData"]["results"]) - 1)
         data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
         return data
     except (HTTPError, TypeError):
