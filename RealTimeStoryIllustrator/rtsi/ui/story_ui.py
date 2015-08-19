@@ -12,6 +12,9 @@ __author__ = 'hoebart'
 
 
 class StoryWindow(QtGui.QMainWindow):
+    """
+    Window that holds all images and is displayed fullscreen
+    """
     def __init__(self, text):
         """
         Initialize Story Window
@@ -88,12 +91,21 @@ class StoryWindow(QtGui.QMainWindow):
         self.image_list.put(images)
         print("Image has been put in Queue size is now:"+str(self.image_list.qsize()))
 
+    def set_subtitles(self, subtitle):
+        """
+        Sets the subtitles to the pictures
+        :param subtitles: Found words from the dictionary
+        """
+
+        self.subtitle_label.setText(QtGui.QApplication.translate("Form", subtitle, None, QtGui.QApplication.UnicodeUTF8))
+
     @QtCore.Slot()
     def switch_to_next_image(self):
         """
         Takes next image from the list and displays it e.g. when sentence ends.
         """
         self.change_subtitles()
+        temptext = ""
         try:
             if not self.image_list.empty():
                 images = self.image_list.get()
@@ -138,4 +150,4 @@ class StoryWindow(QtGui.QMainWindow):
         self.sentence_counter += 1;
 
     def start(self):
-        self.text_service.start_story()
+        self.text_service.start_story(wait_seconds=5)

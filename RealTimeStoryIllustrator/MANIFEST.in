@@ -1,0 +1,2 @@
+include install.bat start.bat uninstall.bat
+recursive-include rtsi/data *.jpg *.txt *.png 

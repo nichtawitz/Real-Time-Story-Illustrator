@@ -12,12 +12,21 @@ __author__ = 'hoebart'
 
 
 def query_tts(sentence_elem):
+    """
+    Sends a request to a TTS provider and saves the voice files as .mp3
+    :param sentence_elem:
+        array with two elements
+            0: number of sentence/part
+            1: the sentence/part
+    :return:
+        the filename or None if the sentence/part was empty
+    """
     file_counter = sentence_elem[0]
     sentence = sentence_elem[1]
 
     if sentence != "" and sentence != " ":
         tts = gTTS(text=sentence, lang='de')
-        filename = 'temp/temp' + str(file_counter) + '.mp3'
+        filename = os.path.join(os.path.dirname(__file__), 'temp/temp' + str(file_counter) + '.mp3')
         tts.save(filename)
         return filename
     else:
@@ -25,15 +34,28 @@ def query_tts(sentence_elem):
 
 
 class AudioService:
+    """
+    Handles audio requests, playing and timing of voice + images
+    """
     def __init__(self, window):
+        """
+        Creates a new AudioService
+        :param window:
+            QObject of the story ui
+        """
         self.media_object = Phonon.MediaObject(window)
         self.audio_output = Phonon.AudioOutput(Phonon.MusicCategory, window)
         Phonon.createPath(self.media_object, self.audio_output)
         self.filename_list = []
 
     def prepare_voice(self, sentence_list):
+        """
+        Creates the temp folder and puts themin the playlist
+        :param sentence_list:
+            List of all sentences/parts of the story/tale
+        """
         try:
-            os.mkdir('temp/')
+            os.mkdir(os.path.join(os.path.dirname(__file__), 'temp/'))
         except OSError:
             pass
 
@@ -48,5 +70,9 @@ class AudioService:
         self.media_object.play()
 
     def set_clip_callback(self, method):
+        """
+        :param method:
+            Gets called when current clip changes
+        """
         self.media_object.currentSourceChanged.connect(method)
 

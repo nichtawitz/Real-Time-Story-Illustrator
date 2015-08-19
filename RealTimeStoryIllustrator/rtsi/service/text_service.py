@@ -1,17 +1,25 @@
+import os
 import threading
 from PySide import QtCore
-import random
 import re
 from multiprocessing.dummy import Pool as ThreadPool
 from rtsi.service.audio_service import AudioService
 from rtsi.service.image_service import image_from_keyword_list
-from threading import  Thread
 from time import sleep
 
 __author__ = 'hoebart'
 
 
 def derive_keyword(sentence):
+    """
+    Looks for up to 3 interesting and important words in a sentence which will be used to fetch images. Currently uses
+    a dictionary based approach (data\dictionary.txt)
+    :param sentence:
+        The part of the story which should be analyzed
+    :return:
+        An array with 1 to 3 strings. If no words in the sentence are interesting it returns None
+    """
+
     # old code:
     '''
     candidates = []
@@ -24,7 +32,8 @@ def derive_keyword(sentence):
     else:
         return None
     '''
-    wordlist = [line.rstrip() for line in open('data\dictionary.txt',encoding="utf-8")]
+    wordlist = [line.rstrip() for line in
+                open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'dictionary.txt'), encoding="utf-8")]
 
     candidates = []
     for word in re.split('\W+', sentence):
@@ -44,9 +53,18 @@ def start_image_timing(keyword_list, timing_list, change_img):
 
 
 class TextService(QtCore.QObject):
+    """
+    A TextService which handles all text processing including the fetching of images and voice
+    """
     change_img = QtCore.Signal()
 
     def __init__(self, text, window):
+        """
+        :param text:
+           Complete tale/story
+        :param window:
+            Story_UI window
+        """
         QtCore.QObject.__init__(self)
         self.word_list = re.split('\s', text)
         self.window = window
@@ -58,17 +76,24 @@ class TextService(QtCore.QObject):
         self.keyword_list = pool.map(derive_keyword, self.sentence_list)
         pool.close()
         pool.join()
+
         self.audio_service = AudioService(window)
         audio_thread = threading.Thread(target=self.audio_service.prepare_voice, args=(self.sentence_list,))
+        audio_thread.setDaemon(True)
         audio_thread.start()
-        # self.audio_service.prepare_voice(self.sentence_list)
-        # image_list = image_from_keyword_list(self.keyword_list)
         image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window))
+        image_thread.setDaemon(True)
         image_thread.start()
+        # subtitle_thread = threading.Thread(target=window.set_subtitles, args=())
+        # subtitle_thread.setDaemon(True)
+        # subtitle_thread.start()
 
-    def start_story(self):
+    def start_story(self, wait_seconds=5):
+        """
+        Starts the story telling but waits a few seconds (to preload some data)
+        """
         self.audio_service.set_clip_callback(self.window.switch_to_next_image)
-        sleep(5)
+        sleep(wait_seconds)
         self.audio_service.start_audio()
 
     def get_sentence_list(self):
