@@ -70,6 +70,7 @@ class StoryWindow(QtGui.QMainWindow):
         self.main_layout.addWidget(self.frame)
         self.setCentralWidget(self.central_widget)
 
+        self.subtitle_label.setStyleSheet("font: bold 22px; color: white;")
         self.subtitle_label.setText(QtGui.QApplication.translate("Form", "Subtitles", None, QtGui.QApplication.UnicodeUTF8))
         self.setWindowTitle(
             QtGui.QApplication.translate("StoryWindow", "Real Time Story Teller", None, QtGui.QApplication.UnicodeUTF8))
