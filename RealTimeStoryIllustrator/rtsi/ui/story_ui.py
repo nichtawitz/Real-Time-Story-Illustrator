@@ -75,6 +75,8 @@ class StoryWindow(QtGui.QMainWindow):
             QtGui.QApplication.translate("StoryWindow", "Real Time Story Teller", None, QtGui.QApplication.UnicodeUTF8))
 
         self.text_service = TextService(text, self)
+        self.sentence_counter = 0
+        self.sentence_list = self.text_service.get_sentence_list()
         self.text_service.change_img.connect(self.switch_to_next_image)
 
     def append_images(self, images):
@@ -90,6 +92,7 @@ class StoryWindow(QtGui.QMainWindow):
         """
         Takes next image from the list and displays it e.g. when sentence ends.
         """
+        self.change_subtitles()
         try:
             if not self.image_list.empty():
                 images = self.image_list.get()
@@ -128,6 +131,10 @@ class StoryWindow(QtGui.QMainWindow):
             pass
 
         QtGui.QApplication.processEvents()
+
+    def change_subtitles(self):
+        self.subtitle_label.setText(self.sentence_list[self.sentence_counter])
+        self.sentence_counter += 1;
 
     def start(self):
         self.text_service.start_story()
