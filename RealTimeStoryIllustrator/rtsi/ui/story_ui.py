@@ -151,3 +151,10 @@ class StoryWindow(QtGui.QMainWindow):
 
     def start(self):
         self.text_service.start_story(wait_seconds=5)
+
+    def keyPressEvent(self, event):
+        if event.key() == QtCore.Qt.Key_Space:
+            self.text_service.pause_play()
+        elif event.key() == QtCore.Qt.Key_Escape:
+            self.close()
+        return True

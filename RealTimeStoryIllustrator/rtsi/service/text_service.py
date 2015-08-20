@@ -98,3 +98,6 @@ class TextService(QtCore.QObject):
 
     def get_sentence_list(self):
         return self.sentence_list
+
+    def pause_play(self):
+        self.audio_service.pause_play()
