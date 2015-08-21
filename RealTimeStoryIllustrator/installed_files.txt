@@ -1,0 +1,47 @@
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\EGG-INFO\dependency_links.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\EGG-INFO\entry_points.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\EGG-INFO\not-zip-safe
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\EGG-INFO\PKG-INFO
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\EGG-INFO\requires.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\EGG-INFO\SOURCES.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\EGG-INFO\top_level.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\main.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\__init__.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\dictionary.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\sites.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\bgs\forest_day.jpg
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\bgs\forest_night.jpg
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Aschenputtel.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Das tapfere Schneiderlein.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Der Froschkönig oder der eiserne Heinrich.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Der Wolf und die sieben jungen Geißlein.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Dornröschen.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Hänsel und Gretel.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Rapunzel.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Rotkäppchen.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\fairytales\Schneewittchen.txt
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\pics\tree_corner.png
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\pics\tree_left.png
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\data\pics\tree_right.png
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\audio_service.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\image_service.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\text_service.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\__init__.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\__pycache__\audio_service.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\__pycache__\image_service.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\__pycache__\text_service.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\service\__pycache__\__init__.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\test\__init__.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\test\__pycache__\__init__.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\ui\init_ui.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\ui\story_ui.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\ui\__init__.py
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\ui\__pycache__\init_ui.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\ui\__pycache__\story_ui.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\ui\__pycache__\__init__.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\__pycache__\main.cpython-34.pyc
+c:\program files\python\lib\site-packages\RealTimeStoryIllustrator-0.1-py3.4.egg\rtsi\__pycache__\__init__.cpython-34.pyc
+C:\Program Files\Python\Scripts\start_rtsi-script.py
+C:\Program Files\Python\Scripts\start_rtsi.exe
+C:\Program Files\Python\Scripts\pyside-uic-script.py
+C:\Program Files\Python\Scripts\pyside-uic.exe

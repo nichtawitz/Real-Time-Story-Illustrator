@@ -88,14 +88,6 @@ class StoryWindow(QtGui.QMainWindow):
         self.image_list.put(images)
         print("Image has been put in Queue size is now:"+str(self.image_list.qsize()))
 
-    def set_subtitles(self, subtitle):
-        """
-        Sets the subtitles to the pictures
-        :param subtitles: Found words from the dictionary
-        """
-
-        self.subtitle_label.setText(QtGui.QApplication.translate("Form", subtitle, None, QtGui.QApplication.UnicodeUTF8))
-
     @QtCore.Slot()
     def switch_to_next_image(self):
         """

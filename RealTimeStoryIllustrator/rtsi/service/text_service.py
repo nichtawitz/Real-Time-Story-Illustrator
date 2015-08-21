@@ -20,18 +20,6 @@ def derive_keyword(sentence):
         An array with 1 to 3 strings. If no words in the sentence are interesting it returns None
     """
 
-    # old code:
-    '''
-    candidates = []
-    for word in re.split('\W+', sentence):
-        if re.match('[A-Z]', word) is not None:
-            candidates.append(word)
-    # cap_words.pop(0)  # Remove start of sentence
-    if len(candidates) != 0:
-        return random.choice(candidates)
-    else:
-        return None
-    '''
     wordlist = [line.rstrip() for line in
                 open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'dictionary.txt'), encoding="utf-8")]
 
