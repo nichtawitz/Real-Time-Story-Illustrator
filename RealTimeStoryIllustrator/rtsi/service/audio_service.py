@@ -76,3 +76,8 @@ class AudioService:
         """
         self.media_object.currentSourceChanged.connect(method)
 
+    def pause_play(self):
+        if self.media_object.state() == Phonon.PausedState:
+            self.media_object.play()
+        else:
+            self.media_object.pause()

@@ -55,8 +55,8 @@ class TextService(QtCore.QObject):
         """
         QtCore.QObject.__init__(self)
         self.word_list = re.split('\s', text)
-        self.sentence_list = re.split('\.|:|;|-|,', text)
         self.window = window
+        self.sentence_list = re.split('\.|:|;|-|,', text)
         self.keyword_list = []
         self.timing_list = []
 
@@ -83,3 +83,9 @@ class TextService(QtCore.QObject):
         self.audio_service.set_clip_callback(self.window.switch_to_next_image)
         sleep(wait_seconds)
         self.audio_service.start_audio()
+
+    def get_sentence_list(self):
+        return self.sentence_list
+
+    def pause_play(self):
+        self.audio_service.pause_play()
