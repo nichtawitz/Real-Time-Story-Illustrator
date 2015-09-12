@@ -26,7 +26,7 @@ def query_tts(sentence_elem):
 
     if sentence != "" and sentence != " ":
         tts = gTTS(text=sentence, lang='de')
-        filename = os.path.join(os.path.dirname(__file__), 'temp/temp' + str(file_counter) + '.mp3')
+        filename = os.path.join(os.path.dirname(__file__), '..', 'temp', 'temp' + str(file_counter) + '.mp3')
         tts.save(filename)
         return filename
     else:
@@ -55,7 +55,7 @@ class AudioService:
             List of all sentences/parts of the story/tale
         """
         try:
-            os.mkdir(os.path.join(os.path.dirname(__file__), 'temp/'))
+            os.mkdir(os.path.join(os.path.dirname(__file__), '..', 'temp/'))
         except OSError:
             pass
 

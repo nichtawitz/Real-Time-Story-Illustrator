@@ -1,3 +1,4 @@
+import os
 import shutil
 
 __author__ = 'hoebart'
@@ -5,14 +6,14 @@ __author__ = 'hoebart'
 import sys
 
 from PySide import QtGui
-import rtsi.ui.init_ui as ui
+import rtsi.ui.main_window as ui
 
 
 def delete_temp():
     """
     delete the temporary sound folder
     """
-    shutil.rmtree('temp', ignore_errors=True)
+    shutil.rmtree(os.path.join(os.path.dirname(__file__), 'temp'), ignore_errors=True)
 
 def delete_egg_info():
     """
@@ -24,7 +25,7 @@ def main():
     delete_temp()
     #delete_egg_info()
     app = QtGui.QApplication(sys.argv)
-    edit_window = ui.InitWindow()
+    edit_window = ui.MainWindow()
     edit_window.show()
     app.lastWindowClosed.connect(delete_temp)
     sys.exit(app.exec_())
