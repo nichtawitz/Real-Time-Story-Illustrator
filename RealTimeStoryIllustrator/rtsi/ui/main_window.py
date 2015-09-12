@@ -132,7 +132,9 @@ class MainWindow(QtGui.QWidget):
         self.sentence_list = self.text_service.get_sentence_list()
         self.status_lbl.setText("Preloading...")
         QtGui.QApplication.processEvents()
-        self.text_service.start_story(wait_seconds=5)
+        while self.image_list.qsize() < 4:
+            continue
+        self.text_service.start_story(wait_seconds=0)
         self.status_lbl.setText("Stroy is playing")
         QtGui.QApplication.processEvents()
 
