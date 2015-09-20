@@ -77,6 +77,9 @@ class AudioService:
         self.media_object.currentSourceChanged.connect(method)
 
     def pause_play(self):
+        """
+        Pauses the story if its playing or resumes the story if its paused
+        """
         if self.media_object.state() == Phonon.PausedState:
             self.media_object.play()
         else:

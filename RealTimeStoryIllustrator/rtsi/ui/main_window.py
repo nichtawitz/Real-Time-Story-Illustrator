@@ -3,9 +3,10 @@
 # Form implementation generated from reading ui file 'main_window.ui'
 #
 # Created: Sat Sep 12 21:16:16 2015
-#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+# by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
+import copy
 import os
 import queue
 
@@ -14,7 +15,6 @@ from rtsi.service.text_service import TextService
 
 
 class MainWindow(QtGui.QWidget):
-
     def __init__(self):
         super().__init__()
 
@@ -104,12 +104,18 @@ class MainWindow(QtGui.QWidget):
         self.main_layout.addWidget(self.btn_frame, 2, 0, 1, 1)
 
         self.setWindowTitle(QtGui.QApplication.translate("main_window", "Form", None, QtGui.QApplication.UnicodeUTF8))
-        self.status_lbl.setText(QtGui.QApplication.translate("main_window", "Status...", None, QtGui.QApplication.UnicodeUTF8))
-        self.start_btn.setText(QtGui.QApplication.translate("main_window", "Start Story", None, QtGui.QApplication.UnicodeUTF8))
-        self.pause_btn.setText(QtGui.QApplication.translate("main_window", "Pause", None, QtGui.QApplication.UnicodeUTF8))
-        self.image_holder1.setText(QtGui.QApplication.translate("main_window", "Image1", None, QtGui.QApplication.UnicodeUTF8))
-        self.image_holder2.setText(QtGui.QApplication.translate("main_window", "Image2", None, QtGui.QApplication.UnicodeUTF8))
-        self.image_holder3.setText(QtGui.QApplication.translate("main_window", "Image3", None, QtGui.QApplication.UnicodeUTF8))
+        self.status_lbl.setText(
+            QtGui.QApplication.translate("main_window", "Status...", None, QtGui.QApplication.UnicodeUTF8))
+        self.start_btn.setText(
+            QtGui.QApplication.translate("main_window", "Start Story", None, QtGui.QApplication.UnicodeUTF8))
+        self.pause_btn.setText(
+            QtGui.QApplication.translate("main_window", "Pause", None, QtGui.QApplication.UnicodeUTF8))
+        self.image_holder1.setText(
+            QtGui.QApplication.translate("main_window", "Image1", None, QtGui.QApplication.UnicodeUTF8))
+        self.image_holder2.setText(
+            QtGui.QApplication.translate("main_window", "Image2", None, QtGui.QApplication.UnicodeUTF8))
+        self.image_holder3.setText(
+            QtGui.QApplication.translate("main_window", "Image3", None, QtGui.QApplication.UnicodeUTF8))
 
         # Non GUI members
         self.text_service = None
@@ -117,6 +123,7 @@ class MainWindow(QtGui.QWidget):
         self.img_index = 0
         self.sentence_counter = 0
         self.sentence_list = []  # self.text_service.get_sentence_list()
+        self.highlighted_sentence_list = []
 
         # Setup functions & signals/slots
         self.fill_combo_box()
@@ -132,9 +139,13 @@ class MainWindow(QtGui.QWidget):
         self.sentence_list = self.text_service.get_sentence_list()
         self.status_lbl.setText("Preloading...")
         QtGui.QApplication.processEvents()
-        while self.image_list.qsize() < 4:
-            continue
-        self.text_service.start_story(wait_seconds=0)
+        wait = 0
+        if len(self.text_service.keyword_list) > 5:
+            while self.image_list.qsize() < 4:
+                continue
+        else:
+            wait = 3
+        self.text_service.start_story(wait_seconds=3)
         self.status_lbl.setText("Stroy is playing")
         QtGui.QApplication.processEvents()
 
@@ -143,7 +154,7 @@ class MainWindow(QtGui.QWidget):
         """
         Takes next image from the list and displays it e.g. when sentence ends.
         """
-        # self.change_subtitles()
+        self.change_highlight()
         try:
             if not self.image_list.empty():
                 images = self.image_list.get()
@@ -181,6 +192,7 @@ class MainWindow(QtGui.QWidget):
         except IndexError:  # gets thrown if one sentence is told
             pass
 
+        self.sentence_counter += 1
         QtGui.QApplication.processEvents()  # Update Gui to reflect changes
 
     def combo_box_index(self):
@@ -214,7 +226,8 @@ class MainWindow(QtGui.QWidget):
         :param image: Image which should be added
         """
         self.image_list.put(images)
-        print("Image has been put in Queue size is now:"+str(self.image_list.qsize()))
+        if images != [None]:
+            print("Image has been put in Queue size is now:" + str(self.image_list.qsize()))
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
@@ -230,3 +243,14 @@ class MainWindow(QtGui.QWidget):
             self.pause_btn.setText("Pause")
             self.status_lbl.setText("Story is playing")
         QtGui.QApplication.processEvents()
+
+
+    def change_highlight(self):
+        self.highlighted_sentence_list = copy.deepcopy(self.sentence_list)
+        current_sentence = self.highlighted_sentence_list[self.sentence_counter]
+        current_sentence = "<b>" + current_sentence + "</b>"
+        self.highlighted_sentence_list[self.sentence_counter] = current_sentence
+        scroll_pos = self.text_edit.horizontalScrollBar().value()
+        self.text_edit.setText("".join(self.highlighted_sentence_list))
+        self.text_edit.horizontalScrollBar().setValue
+        return

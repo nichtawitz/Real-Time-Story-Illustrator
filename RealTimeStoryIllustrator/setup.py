@@ -14,7 +14,8 @@ setup(
     install_requires=[ 
         'gTTs', 
         'PySide', 
-        'mstranslator'
+        'mstranslator',
+        'regex'
     ], 
     entry_points={ 
         'console_scripts': [ 
