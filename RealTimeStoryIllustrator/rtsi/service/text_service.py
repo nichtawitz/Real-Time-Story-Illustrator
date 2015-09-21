@@ -3,6 +3,7 @@ import threading
 from PySide import QtCore
 import re
 from multiprocessing.dummy import Pool as ThreadPool
+import regex
 from rtsi.service.audio_service import AudioService
 from rtsi.service.image_service import image_from_keyword_list
 from time import sleep
@@ -56,7 +57,8 @@ class TextService(QtCore.QObject):
         QtCore.QObject.__init__(self)
         self.word_list = re.split('\s', text)
         self.window = window
-        self.sentence_list = re.split('\.|:|;|-|,', text)
+        self.sentence_list = regex.split("(?V1)(?<=\.|:|;|-|,|\!)", text)
+        self.sentence_list = self.join_short_sentences()
         self.keyword_list = []
         self.timing_list = []
 
@@ -89,3 +91,16 @@ class TextService(QtCore.QObject):
 
     def pause_play(self):
         self.audio_service.pause_play()
+
+    def join_short_sentences(self):
+        result_list = []
+        for sentence in self.sentence_list:
+            if len(sentence.split()) > 4:
+                result_list.append(sentence)
+            else:
+                try:
+                    result_list[-1] = result_list[-1] + sentence
+                except IndexError:
+                    result_list.append(sentence)
+        return result_list
+
