@@ -30,10 +30,6 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         The image data in bytes
     """
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    user_ip = s.getsockname()[0]
-    s.close()
 
     if keyword is None:
         return None
@@ -58,17 +54,20 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         excludedsites = excludedsites + "-site:" + urllib.parse.quote_plus(site) + '%20'
 
     img_type = '%7Eillustration+AND+clipart'
-    url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
-           'v=1.0&q=' + term + '%20' +  img_type + '%20' + excludedsites + '%20&userip=' + '&rsz=8&imgsz=medium&safe=active' + '&tbs=ic:color')
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
-    response = urlopen(url).read().decode()
+    url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
+           'v=1.0&q=' + term + '%20' +  img_type + '%20' + excludedsites + '%20&userip=91.141.0.105' + '&rsz=8&imgsz=medium&safe=active' + '&tbs=ic:color')
 
     try:
+        response = opener.open(url, timeout=2).read().decode()
         img_num = random.randint(0, len(json.loads(response)["responseData"]["results"])-1)
-        data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"]).read()
+        data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"], timeout=2).read()
         return data
-    except (HTTPError, TypeError):
-        return request_image(keyword, num_of_try + 1, translate=translate)
+    except:  # have to catch everything since socket exceptions seem to be broken
+        print("trying again, request was denied")
+        return request_image(window, keyword, num_of_try + 1, translate=translate)
 
 
 def image_from_keyword_list(word_list, window):
@@ -83,7 +82,7 @@ def image_from_keyword_list(word_list, window):
     """
     for words in word_list:
         if words is None:
-            #window.append_images([None])
+            window.append_images([None])
             continue
         temp_list = []
         for word in words:

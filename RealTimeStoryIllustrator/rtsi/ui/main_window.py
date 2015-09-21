@@ -139,13 +139,13 @@ class MainWindow(QtGui.QWidget):
         self.sentence_list = self.text_service.get_sentence_list()
         self.status_lbl.setText("Preloading...")
         QtGui.QApplication.processEvents()
-        wait = 0
-        if len(self.text_service.keyword_list) > 5:
-            while self.image_list.qsize() < 4:
+        wait = 0.1
+        if len(self.text_service.keyword_list) > 3:
+            while self.image_list.qsize() < 2:
                 continue
         else:
             wait = 3
-        self.text_service.start_story(wait_seconds=3)
+        self.text_service.start_story(wait_seconds=wait)
         self.status_lbl.setText("Stroy is playing")
         QtGui.QApplication.processEvents()
 
@@ -228,6 +228,8 @@ class MainWindow(QtGui.QWidget):
         self.image_list.put(images)
         if images != [None]:
             print("Image has been put in Queue size is now:" + str(self.image_list.qsize()))
+        else:
+            print("No Image was found in this sentence")
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
