@@ -15,7 +15,8 @@ setup(
         'gTTs', 
         'PySide', 
         'mstranslator',
-        'regex'
+        'regex',
+        'bing_search_api'
     ], 
     entry_points={ 
         'console_scripts': [ 

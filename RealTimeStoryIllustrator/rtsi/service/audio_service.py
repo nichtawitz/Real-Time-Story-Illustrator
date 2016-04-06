@@ -1,4 +1,5 @@
 import os
+import re
 
 from PySide.phonon import Phonon
 from gtts import gTTS
@@ -23,6 +24,7 @@ def query_tts(sentence_elem):
     """
     file_counter = sentence_elem[0]
     sentence = sentence_elem[1]
+    sentence = re.sub('"','',sentence)
 
     if sentence != "" and sentence != " ":
         tts = gTTS(text=sentence, lang='de')

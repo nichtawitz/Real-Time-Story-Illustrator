@@ -7,6 +7,7 @@ import os
 from urllib.error import HTTPError
 from urllib.request import urlopen
 from urllib.parse import urlencode
+from bing_search_api import BingSearchAPI
 
 from mstranslator import Translator
 
@@ -61,12 +62,20 @@ def request_image(window, keyword, num_of_try=0, translate=True):
            'v=1.0&q=' + term + '%20' +  img_type + '%20' + excludedsites + '%20&userip=91.141.0.105' + '&rsz=8&imgsz=medium&safe=active' + '&tbs=ic:color')
 
     try:
-        response = opener.open(url, timeout=2).read().decode()
-        img_num = random.randint(0, len(json.loads(response)["responseData"]["results"])-1)
-        data = urllib.request.urlopen(json.loads(response)["responseData"]["results"][img_num]["url"], timeout=2).read()
+        params = {'$format': 'json', '$top': 10, 'ImageFilters': '\'Size:Small\''}
+        bingKey = open('../bing.key').read()
+        api = BingSearchAPI(bingKey)
+        result = api.search_image(str(translatedkw),params)
+        amount = len(result.json()['d']['results'])
+        # print(json.dumps(result.json(), sort_keys=True, indent=2))
+
+        # print(result.json())
+        # print(result.json()['d']['results'][0]['MediaUrl'])
+        img_num = random.randint(0, amount-1)
+        data = urllib.request.urlopen(result.json()['d']['results'][img_num]['MediaUrl'], timeout=2).read()
         return data
-    except:  # have to catch everything since socket exceptions seem to be broken
-        print("trying again, request was denied")
+    except Exception as e:  # have to catch everything since socket exceptions seem to be broken
+        print("trying again, request was denied "+str(e))
         return request_image(window, keyword, num_of_try + 1, translate=translate)
 
 
