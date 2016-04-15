@@ -127,8 +127,8 @@ class MainWindow(QtGui.QWidget):
 
         # Setup functions & signals/slots
         self.fill_combo_box()
-        self.start_btn.clicked.connect(self.start_story)
-        self.pause_btn.clicked.connect(self.pause_story)
+        self.start_btn.clicked().connect(self.start_story)
+        self.pause_btn.clicked().connect(self.pause_story)
 
         self.combo_box.activated['QString'].connect(self.get_value)
         self.combo_box_index()
