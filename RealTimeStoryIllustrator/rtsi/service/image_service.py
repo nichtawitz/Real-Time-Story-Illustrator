@@ -39,6 +39,7 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         translatedkw = trans.translate(keyword, lang_from='de', lang_to='en')
     else:
         translatedkw = keyword
+
     print("Getting image for: " + str(keyword) + " = " + str(translatedkw))
 
     if num_of_try > 5:  # no images were found
@@ -59,7 +60,8 @@ def request_image(window, keyword, num_of_try=0, translate=True):
     opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 
     url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
-           'v=1.0&q=' + term + '%20' +  img_type + '%20' + excludedsites + '%20&userip=91.141.0.105' + '&rsz=8&imgsz=medium&safe=active' + '&tbs=ic:color')
+           'v=1.0&q=' + term + '%20' + img_type + '%20' + excludedsites + '%20&userip=91.141.0.105' +
+           '&rsz=8&imgsz=medium&safe=active' + '&tbs=ic:color')
 
     try:
         params = {'$format': 'json', '$top': 10, 'ImageFilters': '\'Size:Small\''}
@@ -79,13 +81,15 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         return request_image(window, keyword, num_of_try + 1, translate=translate)
 
 
-def image_from_keyword_list(word_list, window):
+def image_from_keyword_list(word_list, window, english):
     """
     Iterates through a keywordlist and requests images for each one.
     :param word_list:
         List of all important keywords
     :param window:
         Story UI that provides the append_image method
+    :param english:
+        Boolean if keywords should be translated or not
     :return:
         The found image or None if the word in the list was None
     """
@@ -95,6 +99,6 @@ def image_from_keyword_list(word_list, window):
             continue
         temp_list = []
         for word in words:
-            temp_list.append(request_image(window, word, translate=True))
+            temp_list.append(request_image(window, word, translate=english))
 
         window.append_images(temp_list)

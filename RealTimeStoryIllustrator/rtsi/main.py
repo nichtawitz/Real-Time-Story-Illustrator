@@ -3,7 +3,8 @@ import shutil
 import sys
 
 from PySide import QtGui
-from rtsi.ui.main_window import MainWindow
+import rtsi.ui.main_window as ui
+
 
 __author__ = 'hoebart'
 
@@ -26,11 +27,10 @@ def main():
     delete_temp()
     # delete_egg_info()
     app = QtGui.QApplication(sys.argv)
-    edit_window = MainWindow()
+    edit_window = ui.MainWindow()
     edit_window.show()
-    app.lastWindowClosed().connect(delete_temp)
+    app.lastWindowClosed.connect(delete_temp)
     sys.exit(app.exec_())
-
 
 if __name__ == "__main__":
     main()

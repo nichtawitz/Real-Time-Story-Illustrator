@@ -15,6 +15,9 @@ from rtsi.service.text_service import TextService
 
 
 class MainWindow(QtGui.QWidget):
+
+    lang_en = False
+
     def __init__(self):
         super().__init__()
 
@@ -101,6 +104,11 @@ class MainWindow(QtGui.QWidget):
         self.pause_btn.setMaximumSize(QtCore.QSize(16777215, 23))
         self.pause_btn.setObjectName("pause_btn")
         self.btn_frame_layout.addWidget(self.pause_btn, 0, 1, 1, 1)
+        self.lang_switch_btn = QtGui.QPushButton(self.btn_frame)
+        self.lang_switch_btn.setMinimumSize(QtCore.QSize(0, 23))
+        self.lang_switch_btn.setMaximumSize(QtCore.QSize(16777215, 23))
+        self.lang_switch_btn.setObjectName("DE")
+        self.btn_frame_layout.addWidget(self.lang_switch_btn, 0, 3, 1, 1)
         self.main_layout.addWidget(self.btn_frame, 2, 0, 1, 1)
 
         self.setWindowTitle(QtGui.QApplication.translate("main_window", "Form", None, QtGui.QApplication.UnicodeUTF8))
@@ -110,6 +118,8 @@ class MainWindow(QtGui.QWidget):
             QtGui.QApplication.translate("main_window", "Start Story", None, QtGui.QApplication.UnicodeUTF8))
         self.pause_btn.setText(
             QtGui.QApplication.translate("main_window", "Pause", None, QtGui.QApplication.UnicodeUTF8))
+        self.lang_switch_btn.setText(
+            QtGui.QApplication.translate("main_window", "Click to switch to EN", None, QtGui.QApplication.UnicodeUTF8))
         self.image_holder1.setText(
             QtGui.QApplication.translate("main_window", "Image1", None, QtGui.QApplication.UnicodeUTF8))
         self.image_holder2.setText(
@@ -127,14 +137,28 @@ class MainWindow(QtGui.QWidget):
 
         # Setup functions & signals/slots
         self.fill_combo_box()
-        self.start_btn.clicked().connect(self.start_story)
-        self.pause_btn.clicked().connect(self.pause_story)
+        self.start_btn.clicked.connect(self.start_story)
+        self.pause_btn.clicked.connect(self.pause_story)
+        self.lang_switch_btn.clicked.connect(self.switch_lan)
 
         self.combo_box.activated['QString'].connect(self.get_value)
         self.combo_box_index()
 
+    def switch_lan(self):
+        if self.lang_en:
+            self.lang_switch_btn.setText(
+                QtGui.QApplication.translate("main_window", "Click to switch to EN", None, QtGui.QApplication.UnicodeUTF8))
+            self.lang_en = False
+            print("Switched to DE")
+        else:
+            self.lang_switch_btn.setText(
+                QtGui.QApplication.translate("main_window", "Click to switch to DE", None, QtGui.QApplication.UnicodeUTF8))
+            self.lang_en = True
+            print("Switched to EN")
+
     def start_story(self):
-        self.text_service = TextService(self.text_edit.toPlainText(), self)
+        self.lang_switch_btn.setEnabled(False)
+        self.text_service = TextService(self.text_edit.toPlainText(), self, self.lang_en)
         self.text_service.change_img.connect(self.switch_to_next_image)
         self.sentence_list = self.text_service.get_sentence_list()
         self.status_lbl.setText("Preloading...")
@@ -146,8 +170,10 @@ class MainWindow(QtGui.QWidget):
         else:
             wait = 3
         self.text_service.start_story(wait_seconds=wait)
-        self.status_lbl.setText("Stroy is playing")
+        self.status_lbl.setText("Story is playing")
         QtGui.QApplication.processEvents()
+        self.status_lbl.setText("Status..")
+        self.lang_switch_btn.setEnabled(True)
 
     @QtCore.Slot()
     def switch_to_next_image(self):
@@ -214,7 +240,7 @@ class MainWindow(QtGui.QWidget):
             if os.path.isfile(os.path.join(path, name)):
                 tales.append(os.path.splitext(name)[0])
         self.combo_box.clear()
-        self.combo_box.addItem('Märchen auswählen..')
+        self.combo_box.addItem('Choose Fairytale..')
         self.combo_box.addItems(tales)
 
         # fairytale = open('data/fairytales/'+str(self.comboBox.currentText())+'.txt')

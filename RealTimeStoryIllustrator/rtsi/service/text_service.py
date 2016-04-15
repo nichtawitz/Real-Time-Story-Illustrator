@@ -40,14 +40,13 @@ def start_image_timing(keyword_list, timing_list, change_img):
         sleep(timing_list[idx])
         change_img.emit()
 
-
 class TextService(QtCore.QObject):
     """
     A TextService which handles all text processing including the fetching of images and voice
     """
     change_img = QtCore.Signal()
 
-    def __init__(self, text, window):
+    def __init__(self, text, window, lang_en):
         """
         :param text:
            Complete tale/story
@@ -71,7 +70,7 @@ class TextService(QtCore.QObject):
         audio_thread = threading.Thread(target=self.audio_service.prepare_voice, args=(self.sentence_list,))
         audio_thread.setDaemon(True)
         audio_thread.start()
-        image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window))
+        image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window, lang_en))
         image_thread.setDaemon(True)
         image_thread.start()
         # subtitle_thread = threading.Thread(target=window.set_subtitles, args=())
