@@ -3,13 +3,9 @@ import re
 
 from PySide.phonon import Phonon
 from gtts import gTTS
-from multiprocessing.dummy import Pool as ThreadPool
 import time
 
-import rtsi.service.image_service as img_service
-
-
-__author__ = 'hoebart'
+__author__ = 'hoebartNichtawitz'
 
 
 def query_tts(sentence_elem):

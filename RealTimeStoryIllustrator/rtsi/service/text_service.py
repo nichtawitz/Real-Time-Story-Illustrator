@@ -40,6 +40,7 @@ def start_image_timing(keyword_list, timing_list, change_img):
         sleep(timing_list[idx])
         change_img.emit()
 
+
 class TextService(QtCore.QObject):
     """
     A TextService which handles all text processing including the fetching of images and voice
@@ -102,4 +103,3 @@ class TextService(QtCore.QObject):
                 except IndexError:
                     result_list.append(sentence)
         return result_list
-

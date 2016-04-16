@@ -1,10 +1,8 @@
-import json
 import logging
 import random
-import socket
 import urllib
 import os
-from urllib.error import HTTPError
+
 from urllib.request import urlopen
 from urllib.parse import urlencode
 from bing_search_api import BingSearchAPI
@@ -31,11 +29,11 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         The image data in bytes
     """
 
-
     if keyword is None:
         return None
     if translate:
-        trans = Translator('__RealTimeStoryIllustrator__','cpXy6YwcqqjO84ncM6jTGMqoey6uPD3N7yoDYbzk8Xk=')
+        ms_key = open('../ms.key').read()
+        trans = Translator('__RealTimeStoryIllustrator__', ms_key)
         translatedkw = trans.translate(keyword, lang_from='de', lang_to='en')
     else:
         translatedkw = keyword
@@ -46,28 +44,32 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         logger.error("Could not find an image after 5 tries")
         return None
 
-    term = urllib.parse.quote_plus(translatedkw)
+    # OLD CODE FOR SEARCHING BEGIN
 
-    sites = [line.rstrip() for line in
-             open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'sites.txt'),
-                  encoding="utf-8")]
-    excludedsites = ""
-    for site in sites:
-        excludedsites = excludedsites + "-site:" + urllib.parse.quote_plus(site) + '%20'
+    # term = urllib.parse.quote_plus(translatedkw)
 
-    img_type = '%7Eillustration+AND+clipart'
-    opener = urllib.request.build_opener()
-    opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+    # sites = [line.rstrip() for line in
+    #         open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'sites.txt'),
+    #              encoding="utf-8")]
+    # excludedsites = ""
+    # for site in sites:
+    #    excludedsites = excludedsites + "-site:" + urllib.parse.quote_plus(site) + '%20'
 
-    url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
-           'v=1.0&q=' + term + '%20' + img_type + '%20' + excludedsites + '%20&userip=91.141.0.105' +
-           '&rsz=8&imgsz=medium&safe=active' + '&tbs=ic:color')
+    # img_type = '%7Eillustration+AND+clipart'
+    # opener = urllib.request.build_opener()
+    # opener.addheaders = [('User-agent', 'Mozilla/5.0')]
+
+    # url = ('http://ajax.googleapis.com/ajax/services/search/images?' +
+    #      'v=1.0&q=' + term + '%20' + img_type + '%20' + excludedsites + '%20&userip=91.141.0.105' +
+    #       '&rsz=8&imgsz=medium&safe=active' + '&tbs=ic:color')
+
+    # OLD CODE FOR SEARCHING END
 
     try:
         params = {'$format': 'json', '$top': 10, 'ImageFilters': '\'Size:Small\''}
-        bingKey = open('../bing.key').read()
-        api = BingSearchAPI(bingKey)
-        result = api.search_image(str(translatedkw),params)
+        bing_key = open('../bing.key').read()
+        api = BingSearchAPI(bing_key)
+        result = api.search_image(str(translatedkw+'+AND+(illustration+OR+clipart)'), params)
         amount = len(result.json()['d']['results'])
         # print(json.dumps(result.json(), sort_keys=True, indent=2))
 

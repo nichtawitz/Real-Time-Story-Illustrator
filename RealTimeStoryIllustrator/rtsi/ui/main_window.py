@@ -9,9 +9,19 @@
 import copy
 import os
 import queue
+import shutil
 
 from PySide import QtCore, QtGui
 from rtsi.service.text_service import TextService
+
+__author__ = 'hoebartNichtawitz'
+
+
+def delete_temp():
+    """
+    delete the temporary sound folder
+    """
+    shutil.rmtree(os.path.join(os.path.dirname(__file__), 'temp'), ignore_errors=True)
 
 
 class MainWindow(QtGui.QWidget):
@@ -119,7 +129,7 @@ class MainWindow(QtGui.QWidget):
         self.pause_btn.setText(
             QtGui.QApplication.translate("main_window", "Pause", None, QtGui.QApplication.UnicodeUTF8))
         self.lang_switch_btn.setText(
-            QtGui.QApplication.translate("main_window", "Click to switch to EN", None, QtGui.QApplication.UnicodeUTF8))
+            QtGui.QApplication.translate("main_window", "Click to switch Search to EN", None, QtGui.QApplication.UnicodeUTF8))
         self.image_holder1.setText(
             QtGui.QApplication.translate("main_window", "Image1", None, QtGui.QApplication.UnicodeUTF8))
         self.image_holder2.setText(
@@ -145,19 +155,35 @@ class MainWindow(QtGui.QWidget):
         self.combo_box_index()
 
     def switch_lan(self):
-        if self.lang_en:
+        if self.lang_switch_btn.text() == "Close":
+            print("Close button pressed.")
+            delete_temp()
+            self.close()
+        elif self.lang_en:
             self.lang_switch_btn.setText(
-                QtGui.QApplication.translate("main_window", "Click to switch to EN", None, QtGui.QApplication.UnicodeUTF8))
+                QtGui.QApplication.translate("main_window", "Click to switch Search to EN", None, QtGui.QApplication.UnicodeUTF8))
             self.lang_en = False
-            print("Switched to DE")
+            print("Language Button pressed: Switched to DE.")
         else:
             self.lang_switch_btn.setText(
-                QtGui.QApplication.translate("main_window", "Click to switch to DE", None, QtGui.QApplication.UnicodeUTF8))
+                QtGui.QApplication.translate("main_window", "Click to switch Search to DE", None, QtGui.QApplication.UnicodeUTF8))
             self.lang_en = True
-            print("Switched to EN")
+            print("Language Button pressed: Switched to EN.")
 
     def start_story(self):
-        self.lang_switch_btn.setEnabled(False)
+        print("Start button pressed")
+        # Disable buttons
+        self.lang_switch_btn.setText(
+            QtGui.QApplication.translate("main_window", "Close", None, QtGui.QApplication.UnicodeUTF8))
+        self.start_btn.setVisible(False)
+        # Prepare new Story
+        self.text_service = None
+        self.image_list = queue.Queue()
+        self.img_index = 0
+        self.sentence_counter = 0
+        self.sentence_list = []  # self.text_service.get_sentence_list()
+        self.highlighted_sentence_list = []
+        # Start story
         self.text_service = TextService(self.text_edit.toPlainText(), self, self.lang_en)
         self.text_service.change_img.connect(self.switch_to_next_image)
         self.sentence_list = self.text_service.get_sentence_list()
@@ -172,8 +198,7 @@ class MainWindow(QtGui.QWidget):
         self.text_service.start_story(wait_seconds=wait)
         self.status_lbl.setText("Story is playing")
         QtGui.QApplication.processEvents()
-        self.status_lbl.setText("Status..")
-        self.lang_switch_btn.setEnabled(True)
+        # End of Story
 
     @QtCore.Slot()
     def switch_to_next_image(self):
@@ -219,7 +244,10 @@ class MainWindow(QtGui.QWidget):
             pass
 
         self.sentence_counter += 1
+        print("TTS: ", self.sentence_counter, " of ", len(self.highlighted_sentence_list), " sentence parts.")
         QtGui.QApplication.processEvents()  # Update Gui to reflect changes
+        if self.sentence_counter == len(self.highlighted_sentence_list):
+            self.end_of_story()
 
     def combo_box_index(self):
         index = self.combo_box.currentIndex()
@@ -263,6 +291,7 @@ class MainWindow(QtGui.QWidget):
         return True
 
     def pause_story(self):
+        print("Pause button pressed")
         self.text_service.pause_play()
         if self.pause_btn.text() == "Pause":
             self.pause_btn.setText("Resume")
@@ -272,13 +301,25 @@ class MainWindow(QtGui.QWidget):
             self.status_lbl.setText("Story is playing")
         QtGui.QApplication.processEvents()
 
-
     def change_highlight(self):
         self.highlighted_sentence_list = copy.deepcopy(self.sentence_list)
         current_sentence = self.highlighted_sentence_list[self.sentence_counter]
         current_sentence = "<b>" + current_sentence + "</b>"
         self.highlighted_sentence_list[self.sentence_counter] = current_sentence
-        scroll_pos = self.text_edit.horizontalScrollBar().value()
+        # scroll_pos = self.text_edit.horizontalScrollBar().value()
         self.text_edit.setText("".join(self.highlighted_sentence_list))
-        self.text_edit.horizontalScrollBar().setValue
+        # self.text_edit.horizontalScrollBar().setValue
         return
+
+    def end_of_story(self):
+        self.status_lbl.setText(
+            QtGui.QApplication.translate("main_window", "END OF STORY - Restart Application - "
+                                                        "Thanks for using Real-Time Story Illustrator",
+                                         None, QtGui.QApplication.UnicodeUTF8))
+        self.pause_btn.setEnabled(False)
+        self.pause_btn.setVisible(False)
+        self.start_btn.setVisible(False)
+        self.lang_switch_btn.setEnabled(True)
+        self.lang_switch_btn.setText(
+            QtGui.QApplication.translate("main_window", "Close", None, QtGui.QApplication.UnicodeUTF8))
+
