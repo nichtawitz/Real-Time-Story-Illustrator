@@ -14,11 +14,12 @@ import queue
 from PySide import QtCore, QtGui
 from rtsi.service.text_service import TextService
 
+
 __author__ = 'hoebart_nichtawitz'
 EXIT_CODE_FOR_REBOOT = -999
 
 
-def restart():
+def restart(self):
     """
     Restarts the application
     """

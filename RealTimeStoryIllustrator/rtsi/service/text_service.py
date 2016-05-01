@@ -12,6 +12,14 @@ from time import sleep
 __author__ = 'hoebart'
 
 
+def delete_temp():
+    """
+    delete the temporary sound folder
+    """
+    print("text_service: Deleting temp folder.")
+    shutil.rmtree(os.path.join(os.path.dirname(__file__), 'temp'), ignore_errors=True)
+
+
 def derive_keyword(sentence):
     """
     Looks for up to 3 interesting and important words in a sentence which will be used to fetch images. Currently uses
