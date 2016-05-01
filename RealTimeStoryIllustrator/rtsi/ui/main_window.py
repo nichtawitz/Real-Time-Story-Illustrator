@@ -6,6 +6,7 @@
 # by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
+
 import copy
 import os
 import queue
@@ -15,21 +16,32 @@ from PySide import QtCore, QtGui
 from rtsi.service.text_service import TextService
 
 __author__ = 'hoebartNichtawitz'
+EXIT_CODE_FOR_REBOOT = -999
 
 
 def delete_temp():
     """
     delete the temporary sound folder
     """
+    print("main_window: Deleting temp folder.")
     shutil.rmtree(os.path.join(os.path.dirname(__file__), 'temp'), ignore_errors=True)
+
+
+def restart(self):
+    """
+    Restarts the application
+    """
+    # create a signal equivalent to "void someSignal(int, QWidget)"
+    return QtCore.QCoreApplication.exit(EXIT_CODE_FOR_REBOOT)
 
 
 class MainWindow(QtGui.QWidget):
 
     lang_en = False
 
-    def __init__(self):
+    def __init__(self, def_counter):
         super().__init__()
+        self.def_counter = def_counter
 
         # Window setup
         self.setObjectName("main_window")
@@ -108,11 +120,13 @@ class MainWindow(QtGui.QWidget):
         self.start_btn.setMinimumSize(QtCore.QSize(0, 23))
         self.start_btn.setMaximumSize(QtCore.QSize(16777215, 23))
         self.start_btn.setObjectName("start_btn")
+        self.start_btn.setEnabled(False)
         self.btn_frame_layout.addWidget(self.start_btn, 0, 2, 1, 1)
         self.pause_btn = QtGui.QPushButton(self.btn_frame)
         self.pause_btn.setMinimumSize(QtCore.QSize(0, 23))
         self.pause_btn.setMaximumSize(QtCore.QSize(16777215, 23))
         self.pause_btn.setObjectName("pause_btn")
+        self.pause_btn.setEnabled(False)
         self.btn_frame_layout.addWidget(self.pause_btn, 0, 1, 1, 1)
         self.lang_switch_btn = QtGui.QPushButton(self.btn_frame)
         self.lang_switch_btn.setMinimumSize(QtCore.QSize(0, 23))
@@ -129,7 +143,8 @@ class MainWindow(QtGui.QWidget):
         self.pause_btn.setText(
             QtGui.QApplication.translate("main_window", "Pause", None, QtGui.QApplication.UnicodeUTF8))
         self.lang_switch_btn.setText(
-            QtGui.QApplication.translate("main_window", "Click to switch Search to EN", None, QtGui.QApplication.UnicodeUTF8))
+            QtGui.QApplication.translate("main_window", "Click to switch Search to EN",
+                                         None, QtGui.QApplication.UnicodeUTF8))
         self.image_holder1.setText(
             QtGui.QApplication.translate("main_window", "Image1", None, QtGui.QApplication.UnicodeUTF8))
         self.image_holder2.setText(
@@ -155,9 +170,14 @@ class MainWindow(QtGui.QWidget):
         self.combo_box_index()
 
     def switch_lan(self):
+        """
+        Switches the language of the search from German to English or
+        from English to German before the application reads a fairytale.
+        If the story has started, the button can change the application.
+        """
         if self.lang_switch_btn.text() == "Close":
             print("Close button pressed.")
-            delete_temp()
+            # <delete_temp()
             self.close()
         elif self.lang_en:
             self.lang_switch_btn.setText(
@@ -171,34 +191,50 @@ class MainWindow(QtGui.QWidget):
             print("Language Button pressed: Switched to EN.")
 
     def start_story(self):
-        print("Start button pressed")
-        # Disable buttons
-        self.lang_switch_btn.setText(
-            QtGui.QApplication.translate("main_window", "Close", None, QtGui.QApplication.UnicodeUTF8))
-        self.start_btn.setVisible(False)
-        # Prepare new Story
-        self.text_service = None
-        self.image_list = queue.Queue()
-        self.img_index = 0
-        self.sentence_counter = 0
-        self.sentence_list = []  # self.text_service.get_sentence_list()
-        self.highlighted_sentence_list = []
-        # Start story
-        self.text_service = TextService(self.text_edit.toPlainText(), self, self.lang_en)
-        self.text_service.change_img.connect(self.switch_to_next_image)
-        self.sentence_list = self.text_service.get_sentence_list()
-        self.status_lbl.setText("Preloading...")
-        QtGui.QApplication.processEvents()
-        wait = 0.1
-        if len(self.text_service.keyword_list) > 3:
-            while self.image_list.qsize() < 2:
-                continue
+        """
+        Is activated with the "Start Story" button. If the story is already
+        running or the story is finished, the button changes to the "Restart"
+        button to restart application.
+        """
+        if self.start_btn.text() == "Start Story":
+            QtGui.QApplication.processEvents()
+            print("Start button pressed")
+            # Enable button
+            self.pause_btn.setEnabled(False)
+            # Disable buttons
+            self.lang_switch_btn.setText(
+                QtGui.QApplication.translate("main_window", "Close", None, QtGui.QApplication.UnicodeUTF8))
+            self.start_btn.setText(
+                QtGui.QApplication.translate("main_window", "Close and restart", None, QtGui.QApplication.UnicodeUTF8))
+            # Prepare new Story
+            self.text_service = None
+            self.image_list = queue.Queue()
+            self.img_index = 0
+            self.sentence_counter = 0
+            self.sentence_list = []  # self.text_service.get_sentence_list()
+            self.highlighted_sentence_list = []
+            # Start story
+            self.text_service = TextService(self.text_edit.toPlainText(), self, self.lang_en, self.def_counter)
+            self.text_service.change_img.connect(self.switch_to_next_image)
+            self.sentence_list = self.text_service.get_sentence_list()
+            self.status_lbl.setText("Preloading...")
+            QtGui.QApplication.processEvents()
+            wait = 0.1
+            if len(self.text_service.keyword_list) > 3:
+                while self.image_list.qsize() < 2:
+                    continue
+            else:
+                wait = 3
+            self.text_service.start_story(wait_seconds=wait)
+            self.status_lbl.setText("Story is playing")
+            QtGui.QApplication.processEvents()
+            # End of Story
         else:
-            wait = 3
-        self.text_service.start_story(wait_seconds=wait)
-        self.status_lbl.setText("Story is playing")
-        QtGui.QApplication.processEvents()
-        # End of Story
+            print("Restart button pressed")
+            self.text_service.stop_play()
+            # delete_temp()
+            self.close()
+            self.restart()
 
     @QtCore.Slot()
     def switch_to_next_image(self):
@@ -257,10 +293,22 @@ class MainWindow(QtGui.QWidget):
             self.combo_box.setCurrentIndex(0)
 
     def get_value(self):
-        self.text_edit.setText(open(os.path.join(os.path.dirname(__file__), '..', 'data', 'fairytales', str(
-            self.combo_box.currentText()) + '.txt')).read())
+        """
+        Fills the text box with the content of the fairytale and
+         enables or disables the "Start story" button.
+        """
+        if self.combo_box.currentText() == "Choose Fairytale..":
+            self.text_edit.setText("")
+            self.start_btn.setEnabled(False)
+        else:
+            self.text_edit.setText(open(os.path.join(os.path.dirname(__file__), '..', 'data', 'fairytales', str(
+                self.combo_box.currentText()) + '.txt')).read())
+            self.start_btn.setEnabled(True)
 
     def fill_combo_box(self):
+        """
+        Fills the combobox with all the stories found in the data.
+        """
         tales = []
         path = os.path.join(os.path.dirname(__file__), '..', 'data', 'fairytales')
 
@@ -291,6 +339,9 @@ class MainWindow(QtGui.QWidget):
         return True
 
     def pause_story(self):
+        """
+        Pauses the story and changes the button accordingly.
+        """
         print("Pause button pressed")
         self.text_service.pause_play()
         if self.pause_btn.text() == "Pause":
@@ -302,6 +353,9 @@ class MainWindow(QtGui.QWidget):
         QtGui.QApplication.processEvents()
 
     def change_highlight(self):
+        """
+        Highlights the spoken parts with bold text.
+        """
         self.highlighted_sentence_list = copy.deepcopy(self.sentence_list)
         current_sentence = self.highlighted_sentence_list[self.sentence_counter]
         current_sentence = "<b>" + current_sentence + "</b>"
@@ -312,14 +366,19 @@ class MainWindow(QtGui.QWidget):
         return
 
     def end_of_story(self):
+        """
+        Function for ending the application. Changes buttons and labels.
+        """
         self.status_lbl.setText(
             QtGui.QApplication.translate("main_window", "END OF STORY - Restart Application - "
                                                         "Thanks for using Real-Time Story Illustrator",
                                          None, QtGui.QApplication.UnicodeUTF8))
         self.pause_btn.setEnabled(False)
         self.pause_btn.setVisible(False)
-        self.start_btn.setVisible(False)
+        self.start_btn.setVisible(True)
+        self.start_btn.setEnabled(True)
+        self.start_btn.setText(
+            QtGui.QApplication.translate("main_window", "Restart", None, QtGui.QApplication.UnicodeUTF8))
         self.lang_switch_btn.setEnabled(True)
         self.lang_switch_btn.setText(
             QtGui.QApplication.translate("main_window", "Close", None, QtGui.QApplication.UnicodeUTF8))
-
