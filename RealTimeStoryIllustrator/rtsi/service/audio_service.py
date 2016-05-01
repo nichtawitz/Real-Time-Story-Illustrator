@@ -8,9 +8,10 @@ import time
 __author__ = 'hoebartNichtawitz'
 
 
-def query_tts(sentence_elem):
+def query_tts(sentence_elem, dir_counter):
     """
     Sends a request to a TTS provider and saves the voice files as .mp3
+    :param dir_counter: used to create new dirs when restart the program
     :param sentence_elem:
         array with two elements
             0: number of sentence/part
@@ -24,7 +25,9 @@ def query_tts(sentence_elem):
 
     if sentence != "" and sentence != " ":
         tts = gTTS(text=sentence, lang='de')
-        filename = os.path.join(os.path.dirname(__file__), '..', 'temp', 'temp' + str(file_counter) + '.mp3')
+        filename = os.path.join(os.path.dirname(__file__), '..',
+                                'temp'+str(dir_counter), 'temp' + str(file_counter) + '.mp3')
+        print("save: ", filename)
         tts.save(filename)
         return filename
     else:
@@ -32,6 +35,7 @@ def query_tts(sentence_elem):
 
 
 class AudioService:
+
     """
     Handles audio requests, playing and timing of voice + images
     """
@@ -46,23 +50,30 @@ class AudioService:
         Phonon.createPath(self.media_object, self.audio_output)
         self.filename_list = []
 
-    def prepare_voice(self, sentence_list):
+    def prepare_voice(self, sentence_list, dir_counter):
         """
         Creates the temp folder and puts themin the playlist
+        :param dir_counter:
+            Is used to determine which new temp order should be generated
+            after restarting the application
         :param sentence_list:
             List of all sentences/parts of the story/tale
         """
         try:
-            os.mkdir(os.path.join(os.path.dirname(__file__), '..', 'temp/'))
+            os.mkdir(os.path.join(os.path.dirname(__file__), '..', 'temp'+str(dir_counter)+'/'))
         except OSError:
             pass
 
         for idx, sentence in enumerate(sentence_list):
             time.sleep(0.01)
-            name = query_tts([idx, sentence])
+            name = query_tts([idx, sentence], dir_counter)
             self.media_object.enqueue(Phonon.MediaSource(name))
 
     def start_audio(self):
+        """
+        Prints the names of the audio files that are playing
+        and starts the audio.
+        """
         for m in self.media_object.queue():
             print(m.fileName())
         self.media_object.play()
@@ -82,3 +93,11 @@ class AudioService:
             self.media_object.play()
         else:
             self.media_object.pause()
+
+    def stop_play(self):
+        """
+        Stops the story
+        """
+        self.media_object.pause()
+        self.media_object.stop()
+        self.media_object.clearQueue()

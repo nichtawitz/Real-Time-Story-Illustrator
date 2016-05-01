@@ -1,4 +1,5 @@
 import os
+import shutil
 import threading
 from PySide import QtCore
 import re
@@ -11,6 +12,14 @@ from time import sleep
 __author__ = 'hoebart'
 
 
+def delete_temp():
+    """
+    delete the temporary sound folder
+    """
+    print("text_service: Deleting temp folder.")
+    shutil.rmtree(os.path.join(os.path.dirname(__file__), 'temp'), ignore_errors=True)
+
+
 def derive_keyword(sentence):
     """
     Looks for up to 3 interesting and important words in a sentence which will be used to fetch images. Currently uses
@@ -20,7 +29,6 @@ def derive_keyword(sentence):
     :return:
         An array with 1 to 3 strings. If no words in the sentence are interesting it returns None
     """
-
     wordlist = [line.rstrip() for line in
                 open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'dictionary.txt'), encoding="utf-8")]
 
@@ -47,7 +55,7 @@ class TextService(QtCore.QObject):
     """
     change_img = QtCore.Signal()
 
-    def __init__(self, text, window, lang_en):
+    def __init__(self, text, window, lang_en, def_counter):
         """
         :param text:
            Complete tale/story
@@ -62,18 +70,19 @@ class TextService(QtCore.QObject):
         self.keyword_list = []
         self.timing_list = []
 
-        pool = ThreadPool(4)
-        self.keyword_list = pool.map(derive_keyword, self.sentence_list)
-        pool.close()
-        pool.join()
+        self.pool = ThreadPool(4)
+        self.keyword_list = self.pool.map(derive_keyword, self.sentence_list)
+        self.pool.close()
+        self.pool.join()
 
         self.audio_service = AudioService(window)
-        audio_thread = threading.Thread(target=self.audio_service.prepare_voice, args=(self.sentence_list,))
-        audio_thread.setDaemon(True)
-        audio_thread.start()
-        image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window, lang_en))
-        image_thread.setDaemon(True)
-        image_thread.start()
+        self.audio_thread = threading.Thread(target=self.audio_service.prepare_voice,
+                                             args=(self.sentence_list, def_counter))
+        self.audio_thread.setDaemon(True)
+        self.audio_thread.start()
+        self.image_thread = threading.Thread(target=image_from_keyword_list, args=(self.keyword_list, window, lang_en))
+        self.image_thread.setDaemon(True)
+        self.image_thread.start()
         # subtitle_thread = threading.Thread(target=window.set_subtitles, args=())
         # subtitle_thread.setDaemon(True)
         # subtitle_thread.start()
@@ -90,7 +99,17 @@ class TextService(QtCore.QObject):
         return self.sentence_list
 
     def pause_play(self):
+        """
+        Pauses the audio or ends the Pause
+        """
         self.audio_service.pause_play()
+
+    def stop_play(self):
+        """
+        Stops the Story. Used for restart.
+        """
+        self.pool.terminate()
+        self.audio_service.stop_play()
 
     def join_short_sentences(self):
         result_list = []
