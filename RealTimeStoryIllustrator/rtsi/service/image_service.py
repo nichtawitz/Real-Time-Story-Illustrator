@@ -35,13 +35,14 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         ms_key = open('../ms.key').read()
         trans = Translator('__RealTimeStoryIllustrator__', ms_key)
         translatedkw = trans.translate(keyword, lang_from='de', lang_to='en')
+        print("IMAGE SERVICE: Getting image for " + str(keyword) + ". Searched for the english translation '" +
+              str(translatedkw) + "'.")
     else:
         translatedkw = keyword
-
-    print("Getting image for: " + str(keyword) + " = " + str(translatedkw))
+        print("IMAGE SERVICE: Getting image for " + str(keyword) + ".")
 
     if num_of_try > 5:  # no images were found
-        logger.error("Could not find an image after 5 tries")
+        logger.error("IMAGE SERVICE: Could not find an image after 5 tries for " + str(translatedkw) + ".")
         return None
 
     # OLD CODE FOR SEARCHING BEGIN
@@ -79,7 +80,7 @@ def request_image(window, keyword, num_of_try=0, translate=True):
         data = urllib.request.urlopen(result.json()['d']['results'][img_num]['MediaUrl'], timeout=2).read()
         return data
     except Exception as e:  # have to catch everything since socket exceptions seem to be broken
-        print("trying again, request was denied "+str(e))
+        print("ERROR in IMAGE SERVICE: Trying again, request was denied "+str(e))
         return request_image(window, keyword, num_of_try + 1, translate=translate)
 
 

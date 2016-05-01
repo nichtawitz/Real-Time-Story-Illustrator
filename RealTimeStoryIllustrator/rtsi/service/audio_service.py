@@ -26,8 +26,8 @@ def query_tts(sentence_elem, dir_counter):
     if sentence != "" and sentence != " ":
         tts = gTTS(text=sentence, lang='de')
         filename = os.path.join(os.path.dirname(__file__), '..',
-                                'temp'+str(dir_counter), 'temp' + str(file_counter) + '.mp3')
-        print("save: ", filename)
+                                'temp_'+str(dir_counter), 'temp_' + str(file_counter) + '.mp3')
+        print("AUDIO SERVICE: Audio file saved under", filename)
         tts.save(filename)
         return filename
     else:
@@ -60,7 +60,7 @@ class AudioService:
             List of all sentences/parts of the story/tale
         """
         try:
-            os.mkdir(os.path.join(os.path.dirname(__file__), '..', 'temp'+str(dir_counter)+'/'))
+            os.mkdir(os.path.join(os.path.dirname(__file__), '..', 'temp_'+str(dir_counter)+'/'))
         except OSError:
             pass
 
@@ -74,8 +74,6 @@ class AudioService:
         Prints the names of the audio files that are playing
         and starts the audio.
         """
-        for m in self.media_object.queue():
-            print(m.fileName())
         self.media_object.play()
 
     def set_clip_callback(self, method):

@@ -15,8 +15,8 @@ def delete_temp():
     """
     delete the temporary sound folder
     """
-    for path in glob.glob('temp*'):
-        print("main: Deleting", path)
+    for path in glob.glob('temp_*'):
+        print("MAIN: Deleting", path)
         shutil.rmtree(os.path.join(os.path.dirname(__file__), path), ignore_errors=True)
 
 
@@ -35,7 +35,6 @@ def main():
     exit_code = 0
     def_counter = 1
     while True:
-        # delete_egg_info()
         delete_temp()
         try:
             app = QtGui.QApplication(sys.argv)
@@ -47,7 +46,7 @@ def main():
         if exit_code != EXIT_CODE_FOR_REBOOT:
             break
         def_counter += 1
-        print(def_counter)
+        print("MAIN: Restart application.")
     return exit_code
 
 if __name__ == "__main__":

@@ -10,24 +10,15 @@
 import copy
 import os
 import queue
-import shutil
 
 from PySide import QtCore, QtGui
 from rtsi.service.text_service import TextService
 
-__author__ = 'hoebartNichtawitz'
+__author__ = 'hoebart_nichtawitz'
 EXIT_CODE_FOR_REBOOT = -999
 
 
-def delete_temp():
-    """
-    delete the temporary sound folder
-    """
-    print("main_window: Deleting temp folder.")
-    shutil.rmtree(os.path.join(os.path.dirname(__file__), 'temp'), ignore_errors=True)
-
-
-def restart(self):
+def restart():
     """
     Restarts the application
     """
@@ -177,7 +168,6 @@ class MainWindow(QtGui.QWidget):
         """
         if self.lang_switch_btn.text() == "Close":
             print("Close button pressed.")
-            # <delete_temp()
             self.close()
         elif self.lang_en:
             self.lang_switch_btn.setText(
@@ -232,9 +222,8 @@ class MainWindow(QtGui.QWidget):
         else:
             print("Restart button pressed")
             self.text_service.stop_play()
-            # delete_temp()
             self.close()
-            self.restart()
+            restart()
 
     @QtCore.Slot()
     def switch_to_next_image(self):
@@ -245,7 +234,6 @@ class MainWindow(QtGui.QWidget):
         try:
             if not self.image_list.empty():
                 images = self.image_list.get()
-                img1 = QtGui.QPixmap()
                 if len(images) == 1:
                     self.image_holder1.setPixmap(None)
 
@@ -280,7 +268,7 @@ class MainWindow(QtGui.QWidget):
             pass
 
         self.sentence_counter += 1
-        print("TTS: ", self.sentence_counter, " of ", len(self.highlighted_sentence_list), " sentence parts.")
+        print("TEXT TO SPEACH: Audio file is playing -", self.sentence_counter, "of", len(self.highlighted_sentence_list), "sentence parts.")
         QtGui.QApplication.processEvents()  # Update Gui to reflect changes
         if self.sentence_counter == len(self.highlighted_sentence_list):
             self.end_of_story()
@@ -329,9 +317,9 @@ class MainWindow(QtGui.QWidget):
         """
         self.image_list.put(images)
         if images != [None]:
-            print("Image has been put in Queue size is now:" + str(self.image_list.qsize()))
+            print("IMAGE SERVICE: Image has been put in Queue. Size is now: " + str(self.image_list.qsize()) + ".")
         else:
-            print("No Image was found in this sentence")
+            print("IMAGE SERVICE: No Image was found in this sentence.")
 
     def keyPressEvent(self, event):
         if event.key() == QtCore.Qt.Key_Escape:
