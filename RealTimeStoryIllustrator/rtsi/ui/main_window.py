@@ -19,7 +19,7 @@ __author__ = 'hoebart_nichtawitz'
 EXIT_CODE_FOR_REBOOT = -999
 
 
-def restart(self):
+def restart():
     """
     Restarts the application
     """
@@ -40,6 +40,7 @@ class MainWindow(QtGui.QWidget):
         self.resize(800, 600)
         self.setMinimumSize(QtCore.QSize(800, 600))
 
+        # Main Layout
         self.main_layout = QtGui.QGridLayout(self)
         self.main_layout.setSpacing(0)
         self.main_layout.setObjectName("main_layout")
@@ -161,6 +162,9 @@ class MainWindow(QtGui.QWidget):
         self.combo_box.activated['QString'].connect(self.get_value)
         self.combo_box_index()
 
+        palette = QtGui.QPalette()
+        palette.setBrush(QtGui.QPalette.Background, QtGui.QBrush(QtGui.QPixmap("../data/bgs/forest_day.jpg')")))
+
     def switch_lan(self):
         """
         Switches the language of the search from German to English or
@@ -191,7 +195,7 @@ class MainWindow(QtGui.QWidget):
             QtGui.QApplication.processEvents()
             print("Start button pressed")
             # Enable button
-            self.pause_btn.setEnabled(False)
+            self.pause_btn.setEnabled(True)
             # Disable buttons
             self.lang_switch_btn.setText(
                 QtGui.QApplication.translate("main_window", "Close", None, QtGui.QApplication.UnicodeUTF8))
