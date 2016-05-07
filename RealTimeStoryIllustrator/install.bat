@@ -39,4 +39,3 @@ rmdir /s /q dist
 popd
 
 echo Installing RealTimeStoryIllustrator finished...
-pause

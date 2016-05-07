@@ -41,4 +41,3 @@ rmdir /s /q dist
 popd
 
 echo Uninstalling RealTimeStoryIllustrator finished...
-pause

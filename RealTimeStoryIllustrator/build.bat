@@ -38,4 +38,3 @@ rmdir /s /q build
 popd
 
 echo Building RealTimeStoryIllustrator finished...
-pause

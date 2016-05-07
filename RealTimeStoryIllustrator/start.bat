@@ -34,5 +34,3 @@ echo Starting RealTimeStoryIllustrator..
 pushd %~dp0
 cd rtsi && python main.py 
 popd
-
-pause
