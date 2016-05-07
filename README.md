@@ -25,7 +25,7 @@ Version 0.2:
 
 ### Windows:
 ##### Requirements: 
-[Python 3.4](hhttps://www.python.org/downloads/release/python-340/) (or newer) has to be installed on the computer on which Real-Time Story Illustrator will be used. For installation you need to unpack a *.zip, therefore you need software for this. [7-Zip](http://www.7-zip.de/) is an open source software you may use to do this.
+[Python 3.4.3](https://www.python.org/downloads/release/python-343/) (or newer) has to be installed on the computer on which Real-Time Story Illustrator will be used. For installation you need to unpack a *.zip, therefore you need software for this. [7-Zip](http://www.7-zip.de/) is an open source software you may use to do this.
 ##### Note: 
 During installation and while running Real-Time Story Illustrator administrator rights may be needed. The reason for the need of administrator rights during installation is that you may need write access to the installation directory. While running Real-Time Story Illustrator the text to speech engine generates a temp-folder with temporary *.mp3 files, therefore administrative access is needed.
 ##### Installation Process:
