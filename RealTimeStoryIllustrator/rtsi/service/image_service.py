@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 def request_image(window, keyword, num_of_try=0, translate=True):
     """
-    Queries Google for images and retries up to 5 times if the randomly selected image could not be accessed
+    Queries Bing for images and retries up to 5 times if the randomly selected image could not be accessed
     :param keyword:
         string which specifies the image content
     :param num_of_try:
